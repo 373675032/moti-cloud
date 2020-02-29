@@ -1,5 +1,5 @@
 # moti-cloud
-莫提网盘：适合初学者
+莫提网盘：适合初学者，喜欢的小伙伴可以点上面的Star支持一下嘛！
 
 [网盘地址](http://xuewei.world/moti-cloud/)          [视频演示](https://www.bilibili.com/video/av92186731)
 
