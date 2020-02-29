@@ -35,10 +35,10 @@ public class LoginController extends BaseController {
      * @Param []
      * @return java.lang.String
      **/
-    @GetMapping("/admin-moti")
+    @GetMapping("/admin")
     public String adminLogin(){
-        User user = userService.getUserByOpenId("1");
-        logger.info("QQ用户登录成功！"+user);
+        User user = userService.getUserByOpenId("123456789");
+        logger.info("登录成功！"+user);
         session.setAttribute("loginUser", user);
         return "redirect:/index";
     }
