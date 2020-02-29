@@ -1,0 +1,59 @@
+# 配置项目名和session的过期时间
+server:
+  servlet:
+    context-path: /moti-cloud
+    session:
+      timeout: 60m
+  tomcat:
+    uri-encoding: UTF-8
+# 日志的存放位置与级别
+logging:
+  file:
+    name: log/moti-cloud.log
+  level:
+    root: info
+# 配置Mybatis
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+
+spring:
+  #  静态资源的访问路径
+  mvc:
+    static-path-pattern: /**
+  datasource:
+    # 配置数据源
+    username: root
+    password: xxxxx
+    url: jdbc:mysql://xxxxx/moti-cloud?serverTimezone=Hongkong&useAffectedRows=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    # 配置druid数据源
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    filters: stat,wall,log4j
+    maxPoolPreparedStatementPerConnectionSize: 20
+    useGlobalDataSourceStat: true
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+  # 配置ThymeLeaf模板缓存
+  thymeleaf:
+    cache: true
+  http:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+  # 配置文件上传相关
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 1024MB

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moti.mapper.FileFolderMapper">
+  <!--开启二级缓存,使用Ehcache缓存框架-->
+  <cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+  <resultMap id="BaseResultMap" type="com.moti.entity.FileFolder">
+    <!--@mbg.generated-->
+    <!--@Table file_folder-->
+    <id column="file_folder_id" jdbcType="INTEGER" property="fileFolderId" />
+    <result column="file_folder_name" jdbcType="VARCHAR" property="fileFolderName" />
+    <result column="parent_folder_id" jdbcType="INTEGER" property="parentFolderId" />
+    <result column="file_store_id" jdbcType="INTEGER" property="fileStoreId" />
+  </resultMap>
+
+  <!--所有属性【文件夹id，文件夹名称，父文件夹id，文件仓库id】-->
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    file_folder_id, file_folder_name, parent_folder_id, file_store_id,time
+  </sql>
+  <!--文件的所有属性sql-->
+  <sql id="Base_Column_List1">
+    <!--@mbg.generated-->
+    my_file_id, my_file_name, file_store_id, my_file_path, download_time, upload_time,
+    parent_folder_id
+  </sql>
+  <!--添加属性sql-->
+  <sql id="Base_Insert_Key_List">
+    <if test="fileFolderName != null">
+      file_folder_name,
+    </if>
+    <if test="parentFolderId != null">
+      parent_folder_id,
+    </if>
+    <if test="fileStoreId != null">
+      file_store_id,
+    </if>
+    <if test="time != null">
+      time,
+    </if>
+  </sql>
+  <!--添加值sql-->
+  <sql id="Base_Insert_Value_List">
+    <if test="fileFolderName != null">
+      #{fileFolderName,jdbcType=VARCHAR},
+    </if>
+    <if test="parentFolderId != null">
+      #{parentFolderId,jdbcType=INTEGER},
+    </if>
+    <if test="fileStoreId != null">
+      #{fileStoreId,jdbcType=INTEGER},
+    </if>
+    <if test="time != null">
+      #{time},
+    </if>
+  </sql>
+  <!--修改sql-->
+  <sql id="Base_Update_List">
+    <if test="fileFolderName != null">
+      file_folder_name = #{fileFolderName,jdbcType=VARCHAR},
+    </if>
+    <if test="parentFolderId != null">
+      parent_folder_id = #{parentFolderId,jdbcType=INTEGER},
+    </if>
+    <if test="fileStoreId != null">
+      file_store_id = #{fileStoreId,jdbcType=INTEGER},
+    </if>
+  </sql>
+
+  <select id="getFileFolderById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select
+    <include refid="Base_Column_List" />
+    from file_folder
+    where file_folder_id = #{fileFolderId,jdbcType=INTEGER}
+  </select>
+  <select id="getFileFolderByParentFolderId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select
+    <include refid="Base_Column_List" />
+    from file_folder
+    where parent_folder_id = #{parentFolderId,jdbcType=INTEGER}
+  </select>
+  <select id="getFileFolderByFileStoreId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select
+    <include refid="Base_Column_List" />
+    from file_folder
+    where file_store_id = #{fileStoreId,jdbcType=INTEGER}
+  </select>
+  <select id="getRootFoldersByFileStoreId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select
+    <include refid="Base_Column_List" />
+    from file_folder
+    where file_store_id = #{fileStoreId,jdbcType=INTEGER} and parent_folder_id = 0;
+  </select>
+  <select id="getFileByFileFolder" parameterType="java.lang.Integer" resultType="com.moti.entity.MyFile">
+    <!--@mbg.generated-->
+    select
+    <include refid="Base_Column_List1" />
+    from my_file
+    where parent_folder_id = #{parentFolderId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteFileFolderById" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from file_folder
+    where file_folder_id = #{fileFolderId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteFileFolderByParentFolderId" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from file_folder
+    where parent_folder_id = #{parentFolderId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteFileFolderByFileStoreId" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from file_folder
+    where file_store_id = #{fileStoreId,jdbcType=INTEGER}
+  </delete>
+  <insert id="addFileFolder" keyColumn="file_folder_id" keyProperty="fileFolderId" parameterType="com.moti.entity.FileFolder" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into file_folder
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        <include refid="Base_Insert_Key_List"></include>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <include refid="Base_Insert_Value_List"></include>
+    </trim>
+  </insert>
+  <update id="updateFileFolderById" parameterType="com.moti.entity.FileFolder">
+    <!--@mbg.generated-->
+    update file_folder
+    <set>
+        <include refid="Base_Update_List"></include>
+    </set>
+    where file_folder_id = #{fileFolderId,jdbcType=INTEGER}
+  </update>
+  <select id="getFileFolderCountByFileStoreId" resultType="java.lang.Integer">
+        select count(*) from file_folder where file_store_id = #{id}
+    </select>
+</mapper>

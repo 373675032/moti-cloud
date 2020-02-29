@@ -1,0 +1,195 @@
+.bg-primary {
+	background-color: #39065A !important;
+}
+.text-primary {
+	color: #39065A !important;
+}
+a {
+	color: #39065A;
+}
+a:hover {
+	color: #c9253d;
+}
+.btn-primary {
+	background-color: #39065A;
+	border-color: transparent !important;
+}
+.btn-primary:focus,
+.btn-primary:focus:active,
+.btn-primary:active,
+.btn-primary:hover {
+	background-color: #c9253d !important;
+}
+.btn-primary.disabled, .btn-primary:disabled {
+  background-color: #39065A;
+  border-color: #39065A;
+}
+.btn-outline-primary {
+  color: #39065A;
+  background-color: transparent;
+  background-image: none;
+  border-color: #39065A;
+}
+
+.btn-outline-primary:hover {
+  color: #fff;
+  background-color: #39065A;
+  border-color: #39065A;
+}
+.btn-outline-primary.disabled, .btn-outline-primary:disabled {
+  color: #39065A;
+  background-color: transparent;
+}
+.btn-outline-primary:not([disabled]):not(.disabled):active, .btn-outline-primary:not([disabled]):not(.disabled).active,
+.show > .btn-outline-primary.dropdown-toggle {
+  color: #fff;
+  background-color: #39065A;
+  border-color: #39065A;
+}
+.btn-link {
+  font-weight: 400;
+  color: #39065A;
+  background-color: transparent;
+}
+.btn-link:hover {
+  color: #c9253d;
+}
+.dropdown-item.active, .dropdown-item:active {
+  color: #fff;
+  background-color: #39065A;
+}
+.custom-control-input:checked ~ .custom-control-label::before {
+  color: #fff;
+  background-color: #39065A;
+}
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+  background-color: #39065A;
+}
+.custom-checkbox .custom-control-input:indeterminate ~ .custom-control-label::before {
+  background-color: #39065A;
+}
+.custom-radio .custom-control-input:checked ~ .custom-control-label::before {
+  background-color: #39065A;
+}
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #39065A;
+}
+.page-link {
+  color: #39065A;
+  background-color: #fff;
+  border: 1px solid #ededed;
+}
+.page-item.active .page-link {
+  color: #fff;
+  background-color: #39065A;
+  border-color: #39065A;
+}
+.page-link:focus, .page-link:hover {
+  color: #c9253d;
+}
+
+.badge-primary {
+  color: #fff;
+  background-color: #39065A;
+}
+.progress-bar {
+  color: #fff;
+  background-color: #39065A;
+}
+.list-group-item.active {
+  color: #fff;
+  background-color: #39065A;
+  border-color: #39065A;
+}
+.bg-primary {
+  background-color: #39065A !important;
+}
+.border-primary {
+  border-color: #39065A !important;
+}
+.text-primary {
+  color: #39065A !important;
+}
+
+.navbar.active {
+	background-color: #39065A;
+}
+.navbar-bg {
+	background-color: #39065A;
+}
+.form-control:focus {
+	border-color: #39065A;
+}
+.main-sidebar .sidebar-menu li.active a {
+	background-color: #f9f9f9;
+	color: #39065A;
+}
+.main-sidebar .sidebar-menu li ul.menu-dropdown li a:hover {
+	color: #39065A;
+}
+
+.main-sidebar .sidebar-menu li ul.menu-dropdown li.active a {
+	color: #39065A;
+}
+.alert.alert-primary {
+	background-color: #39065A;
+}
+.card.card-primary {
+	border-top: 2px solid #39065A;
+}
+.fc button.fc-state-active {
+	background-color: #39065A;
+	color: #fff;
+}
+.jqvmap-circle {
+	background-color: #39065A;
+	border: 1px solid #000;
+}
+.weather ul li {
+	border: 2px solid #39065A;
+	color: #39065A;
+}
+.card-chat .chat-content .chat-item.chat-right .chat-details .chat-text {
+	background-color: #39065A;
+	color: #fff;
+}
+.nav-tabs .nav-item .nav-link {
+	color: #39065A;
+}
+.nav-pills .nav-item .nav-link {
+	color: #39065A;
+}
+.swal-button.swal-button--confirm {
+	background-color: #39065A;
+}
+.page-item .page-link {
+	color: #39065A;
+}
+.page-item.active .page-link {
+	background-color: #39065A;
+	border-color: #39065A;
+}
+.btn-group .btn.active {
+	background-color: #39065A;
+	color: #fff;
+}
+.media .media-right {
+	color: #39065A;
+}
+.selectric-items li.selected,
+.selectric-items li.highlighted {
+	background-color: #39065A;
+	color: #fff;
+}
+.dropzone {
+	border: 2px dashed #39065A;
+}
+.accordion .accordion-header[aria-expanded="true"] {
+	background-color: #39065A;
+	color: #fff;
+}
+.bootstrap-tagsinput .tag {
+	background-color: #39065A;
+}

@@ -1,0 +1,46 @@
+.navbar.active {
+	background-color: #fff;
+}
+.navbar-bg {
+	background-color: #fff;
+}
+.navbar .nav-link {
+	color: #2C2E3E;
+}
+.navbar .nav-link:hover {
+	color: #3f4257;
+}
+.navbar .form-inline .form-control {
+	background-color: #f2f2f2;
+}
+.navbar .form-inline .btn {
+	background-color: #f2f2f2;
+}
+.main-sidebar {
+	background-color: #212330;
+}
+.main-sidebar .sidebar-brand {
+	background-color: #1f202e;
+}
+.main-sidebar .sidebar-brand a {
+	color: #fff;
+}
+.main-sidebar .sidebar-menu li.active a {
+	background-color: #1f202e;
+	color: #fff;
+}
+.main-sidebar .sidebar-menu li ul.menu-dropdown li a {
+	color: #868e96;
+}
+.main-sidebar .sidebar-menu li ul.menu-dropdown li.active a {
+	color: #fff;
+}
+.main-sidebar .sidebar-menu li a:hover {
+	background-color: #1f202e;
+}
+.main-sidebar .sidebar-menu li.menu-header {
+	color: #3f4257;
+}
+.main-sidebar .sidebar-user .sidebar-user-details .user-name {
+	color: #ededed;	
+}

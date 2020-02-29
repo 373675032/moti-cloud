@@ -1,0 +1,48 @@
+.ul-context-menu {
+	list-style: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 9999;
+	padding: 5px 0;
+	min-width: 80px;
+	margin: 0;
+	display: none;
+	font-family: "微软雅黑";
+	font-size: 14px;
+	background-color: #fff;
+	border: 1px solid rgba(0, 0, 0, .15);
+	box-sizing: border-box;
+	border-radius: 4px;
+	-webkit-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	-moz-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	-ms-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	-o-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ul-context-menu .ui-context-menu-item {
+	margin: 0;
+	padding: 0;
+}
+
+.ul-context-menu .ui-context-menu-item a {
+	display: block;
+	padding: 0 10px;
+	color: #333;
+	white-space: nowrap;
+	text-decoration: none;
+}
+
+.ul-context-menu .ui-context-menu-item a:hover {
+	text-decoration: none;
+	color: #262626;
+}
+
+.ul-context-menu .ui-context-menu-item .icon {
+	width: 16px;
+	height: 16px;
+	margin-right: 8px;
+	vertical-align: sub;
+	border: 0;
+}

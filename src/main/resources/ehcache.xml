@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+         updateCheck="false"
+         monitoring="autodetect"
+         dynamicConfig="true">
+
+    <diskStore path="cache" />
+<!--    <diskStore path="E:/cache" />-->
+
+    <defaultCache
+            maxElementsInMemory="3000"
+            eternal="false"
+            copyOnRead="true"
+            copyOnWrite="true"
+            timeToIdleSeconds="3600"
+            timeToLiveSeconds="3600"
+            overflowToDisk="true"
+            diskPersistent="true">
+        <copyStrategy class="com.moti.utils.MyCopyStrategy"/>
+    </defaultCache>
+</ehcache>
+        <!--
+        属性说明：
+        l diskStore：当内存中不够存储时，存储到指定数据在磁盘中的存储位置。
+        l defaultCache：当借助CacheManager.add("demoCache")创建Cache时，EhCache便会采用<defalutCache/>指定的的管理策略
+
+        以下属性是必须的：
+        l maxElementsInMemory - 在内存中缓存的element的最大数目
+        l maxElementsOnDisk - 在磁盘上缓存的element的最大数目，若是0表示无穷大
+        l eternal - 设定缓存的elements是否永远不过期。如果为true，则缓存的数据始终有效，如果为false那么还要根据timeToIdleSeconds，timeToLiveSeconds判断
+        l overflowToDisk - 设定当内存缓存溢出的时候是否将过期的element缓存到磁盘上
+
+        以下属性是可选的：
+        l timeToIdleSeconds - 当缓存在EhCache中的数据前后两次访问的时间超过timeToIdleSeconds的属性取值时，这些数据便会删除，默认值是0,也就是可闲置时间无穷大
+        l timeToLiveSeconds - 缓存element的有效生命期，默认是0.,也就是element存活时间无穷大
+         diskSpoolBufferSizeMB 这个参数设置DiskStore(磁盘缓存)的缓存区大小.默认是30MB.每个Cache都应该有自己的一个缓冲区.
+        l diskPersistent - 在VM重启的时候是否启用磁盘保存EhCache中的数据，默认是false。
+        l diskExpiryThreadIntervalSeconds - 磁盘缓存的清理线程运行间隔，默认是120秒。每个120s，相应的线程会进行一次EhCache中数据的清理工作
+        l memoryStoreEvictionPolicy - 当内存缓存达到最大，有新的element加入的时候， 移除缓存中element的策略。默认是LRU（最近最少使用），可选的有LFU（最不常使用）和FIFO（先进先出）
+         -->
