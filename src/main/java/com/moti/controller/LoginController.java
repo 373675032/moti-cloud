@@ -29,7 +29,7 @@ public class LoginController extends BaseController {
     private Logger logger = LogUtils.getInstance(LoginController.class);
 
     /**
-     * @Description 免登陆用户入口
+     * @Description 免登陆用户入口，用于本地开发测试，上线运营为了安全请删除此方法
      * @Author xw
      * @Date 15:17 2020/2/26
      * @Param []
@@ -37,8 +37,8 @@ public class LoginController extends BaseController {
      **/
     @GetMapping("/admin")
     public String adminLogin(){
-        User user = userService.getUserByOpenId("123456789");
-        logger.info("登录成功！"+user);
+        User user = userService.getUserByOpenId("1");
+        logger.info("QQ用户登录成功！"+user);
         session.setAttribute("loginUser", user);
         return "redirect:/index";
     }

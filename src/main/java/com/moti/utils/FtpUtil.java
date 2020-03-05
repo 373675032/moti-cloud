@@ -5,10 +5,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +20,7 @@ public class FtpUtil {
     /**
      * FTP服务器hostname
      */
-    private static String HOST = "xxxxxx";
+    private static String HOST = "47.106.183.193";
     /**
      * FTP服务器端口
      */
@@ -31,11 +28,11 @@ public class FtpUtil {
     /**
      * FTP登录账号
      */
-    private static String USERNAME = "xxxxxx";
+    private static String USERNAME = "cloud";
     /**
      * FTP登录密码
      */
-    private static String PASSWORD = "xxxxxx";
+    private static String PASSWORD = "xuewei";
     /**
      * FTP服务器基础目录
      */
@@ -181,6 +178,46 @@ public class FtpUtil {
         return result;
     }
 
+    /**
+     * @Description 从ftp服务器下载文件到指定输出流
+     * @Author xw
+     * @Date 22:30 2020/3/5
+     * @Param [remotePath, fileName, outputStream]
+     * @return boolean
+     **/
+    public static boolean downloadFile(String remotePath, String fileName, OutputStream outputStream) {
+        boolean result = false;
+        try {
+            remotePath = new String(remotePath.getBytes("GBK"),"iso-8859-1");
+            fileName = new String(fileName.getBytes("GBK"),"iso-8859-1");
+            if (!initFtpClient()){
+                return result;
+            };
+            // 转移到FTP服务器目录
+            ftp.changeWorkingDirectory(remotePath);
+            ftp.enterLocalPassiveMode();
+            FTPFile[] fs = ftp.listFiles();
+            for (FTPFile ff : fs) {
+                if (ff.getName().equals(fileName)) {
+                    ftp.enterLocalPassiveMode();
+                    ftp.retrieveFile(remotePath+"/"+fileName,outputStream);
+                    result = true;
+                }
+            }
+            ftp.logout();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (ftp.isConnected()) {
+                try {
+                    ftp.disconnect();
+                } catch (IOException ioe) {
+                }
+            }
+        }
+        return result;
+    }
+    
     /**
      * @Description 删除文件
      * @Author xw

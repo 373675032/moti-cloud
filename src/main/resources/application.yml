@@ -24,8 +24,8 @@ spring:
   datasource:
     # 配置数据源
     username: root
-    password: xxxxx
-    url: jdbc:mysql://xxxxx/moti-cloud?serverTimezone=Hongkong&useAffectedRows=true
+    password: xxxxxxxx
+    url: jdbc:mysql://xxxxxxxx:3306/moti-cloud?serverTimezone=Hongkong&useAffectedRows=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     # 配置druid数据源
@@ -55,5 +55,5 @@ spring:
   # 配置文件上传相关
   servlet:
     multipart:
-      max-file-size: 50MB
+      max-file-size: 1024MB
       max-request-size: 1024MB

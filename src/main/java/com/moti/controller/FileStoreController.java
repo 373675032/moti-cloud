@@ -7,7 +7,6 @@ import com.moti.utils.FtpUtil;
 import com.moti.utils.LogUtils;
 import com.moti.utils.QRCodeUtil;
 import org.slf4j.Logger;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -132,37 +132,20 @@ public class FileStoreController extends BaseController {
         String remotePath = myFile.getMyFilePath();
         String fileName = myFile.getMyFileName()+myFile.getPostfix();
         try {
-            File temp = new File("temp");
-            if (!temp.exists()) {
-                temp.mkdirs();
-            }
-            String tempStr = "temp/"+UUID.randomUUID().toString();
-            File file = new File(tempStr);
             //去FTP上拉取
-            boolean flag = FtpUtil.downloadFile("/" + remotePath, fileName,tempStr);
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            response.setCharacterEncoding("utf-8");
+            // 设置返回类型
+            response.setContentType("multipart/form-data");
+            // 文件名转码一下，不然会出现中文乱码
+            response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode(fileName, "UTF-8"));
+            boolean flag = FtpUtil.downloadFile("/" + remotePath, fileName, os);
             if (flag) {
                 myFileService.updateFile(
-                        MyFile.builder().myFileId(myFile.getMyFileId()).downloadTime(myFile.getDownloadTime()+1).build());
-                //获得服务器本地的文件，并使用IO流写出到浏览器
-                InputStream is = new BufferedInputStream(new FileInputStream(file));
-                OutputStream os = new BufferedOutputStream(response.getOutputStream());
-                response.setCharacterEncoding("utf-8");
-                // 设置返回类型
-                response.setContentType("multipart/form-data");
-                // 文件名转码一下，不然会出现中文乱码
-                response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode(fileName, "UTF-8"));
-                // 设置返回的文件的大小
-                response.setContentLength((int) file.length());
-                byte[] b = new byte[1024];
-                int len = 0;
-                while (-1 != (len = is.read(b))) {
-                    os.write(b, 0, len);
-                }
+                        MyFile.builder().myFileId(myFile.getMyFileId()).downloadTime(myFile.getDownloadTime() + 1).build());
                 os.flush();
                 os.close();
-                is.close();
-                logger.info("文件下载成功!"+myFile);
-                file.delete();
+                logger.info("文件下载成功!" + myFile);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -380,44 +363,37 @@ public class FileStoreController extends BaseController {
         //获取文件信息
         MyFile myFile = myFileService.getFileByFileId(f);
         String pwd = myFile.getUploadTime().getTime()+""+myFile.getSize();
-        if (t==null){
-            return;
-        }
-        if (!pwd.equals(p)){
-            return;
-        }
-        if (myFile == null){
+        if (t==null || myFile == null || !pwd.equals(p)){
             return;
         }
         String remotePath = myFile.getMyFilePath();
         String fileName = myFile.getMyFileName()+myFile.getPostfix();
-        System.out.println("文件位置"+remotePath+fileName);
+        String fileNameTemp = fileName;
         try {
-            File file = new File(fileName);
+            //解决下载文件时 中文文件名乱码问题
+            boolean isMSIE = isMSBrowser(request);
+            if (isMSIE) {
+                //IE浏览器的乱码问题解决
+                fileNameTemp = URLEncoder.encode(fileNameTemp, "UTF-8");
+            } else {
+                //万能乱码问题解决
+                fileNameTemp = new String(fileNameTemp.getBytes("UTF-8"), "ISO-8859-1");
+            }
             //去FTP上拉取
-            boolean flag = FtpUtil.downloadFile("/" + remotePath, fileName,fileName);
-            myFileService.updateFile(
-                    MyFile.builder().myFileId(myFile.getMyFileId()).downloadTime(myFile.getDownloadTime()+1).build());
-            //获得服务器本地的文件，并使用IO流写出到浏览器
-            InputStream is = new BufferedInputStream(new FileInputStream(file));
             OutputStream os = new BufferedOutputStream(response.getOutputStream());
             response.setCharacterEncoding("utf-8");
             // 设置返回类型
             response.setContentType("multipart/form-data");
             // 文件名转码一下，不然会出现中文乱码
-            response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode(file.getName(), "UTF-8"));
-            // 设置返回的文件的大小
-            response.setContentLength((int) file.length());
-            byte[] b = new byte[1024];
-            int len = 0;
-            while (-1 != (len = is.read(b))) {
-                os.write(b, 0, len);
+            response.setHeader("Content-Disposition", "attachment;fileName=" + fileNameTemp);
+            boolean flag = FtpUtil.downloadFile("/" + remotePath, fileName, os);
+            if (flag) {
+                myFileService.updateFile(
+                        MyFile.builder().myFileId(myFile.getMyFileId()).downloadTime(myFile.getDownloadTime() + 1).build());
+                os.flush();
+                os.close();
+                logger.info("文件下载成功!" + myFile);
             }
-            os.flush();
-            os.close();
-            is.close();
-            logger.info("文件下载成功!"+myFile);
-            file.delete();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -464,27 +440,20 @@ public class FileStoreController extends BaseController {
     }
 
     /**
-     * @Description 每天0、1、2 点清除缓存
+     * @Description 判断当前浏览器是否为ie
      * @Author xw
-     * @Date 21:56 2020/2/26
-     * @Param []
-     * @return void
+     * @Date 22:39 2020/3/5
+     * @Param [request]
+     * @return boolean
      **/
-    @Scheduled(cron = "0 0 1,2,3 * * ?")
-    public void flushCache(){
-        File file = new File("temp");
-        if (file == null || !file.exists()){
-            return;
-        }
-        File[] files = file.listFiles();
-        if (files == null || files.length == 0){
-            return;
-        }else {
-            for (File file1 : files) {
-                boolean delete = file1.delete();
+    public static boolean isMSBrowser(HttpServletRequest request) {
+        String[] IEBrowserSignals = {"MSIE", "Trident", "Edge"};
+        String userAgent = request.getHeader("User-Agent");
+        for (String signal : IEBrowserSignals) {
+            if (userAgent.contains(signal)){
+                return true;
             }
-            file.delete();
         }
+        return false;
     }
-    
 }

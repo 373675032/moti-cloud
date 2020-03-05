@@ -17,7 +17,7 @@ public class MvcConfig implements WebMvcConfigurer {
     public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
         //文件最大
-        factory.setMaxFileSize(DataSize.parse("40960KB"));
+        factory.setMaxFileSize(DataSize.parse("1024000KB"));
         /// 设置总上传数据总大小
         factory.setMaxRequestSize(DataSize.parse("1024000KB"));
         return factory.createMultipartConfig();
