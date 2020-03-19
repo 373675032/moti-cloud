@@ -59,7 +59,12 @@ public class SystemController extends BaseController {
             nowFolder = FileFolder.builder().fileFolderId(fId).build();
             location.add(nowFolder);
         } else {
-            //当前为具体目录
+            //当前为具体目录,访问的文件夹不是当前登录用户所创建的文件夹
+            FileFolder folder = fileFolderService.getFileFolderByFileFolderId(fId);
+            if (folder.getFileStoreId() - loginUser.getFileStoreId() != 0){
+                return "redirect:/files";
+            }
+            //当前为具体目录，访问的文件夹是当前登录用户所创建的文件夹
             folders = fileFolderService.getFileFolderByParentFolderId(fId);
             files = myFileService.getFilesByParentFolderId(fId);
             nowFolder = fileFolderService.getFileFolderByFileFolderId(fId);
