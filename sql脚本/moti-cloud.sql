@@ -1,17 +1,3 @@
-/*
-Navicat MySQL Data Transfer
-
-Source Server         : 服务器
-Source Server Version : 50644
-Source Host           : 47.106.183.193:3306
-Source Database       : moti-cloud
-
-Target Server Type    : MYSQL
-Target Server Version : 50644
-File Encoding         : 65001
-
-Date: 2020-02-29 09:46:10
-*/
 
 SET FOREIGN_KEY_CHECKS=0;
 
