@@ -18,23 +18,23 @@ import java.util.List;
  **/
 public class FtpUtil {
     /**
-     * FTP服务器hostname
+     * FTP服务器hostname（需要修改此处）
      */
-    private static String HOST = "47.106.183.193";
+    private static String HOST = "xx.xxx.xxx.xxx";
     /**
-     * FTP服务器端口
+     * FTP服务器端口（默认21）
      */
     private static int PORT = 21;
     /**
-     * FTP登录账号
+     * FTP登录账号（需要修改此处）
      */
-    private static String USERNAME = "cloud";
+    private static String USERNAME = "xxx";
     /**
-     * FTP登录密码
+     * FTP登录密码（需要修改此处）
      */
-    private static String PASSWORD = "xuewei";
+    private static String PASSWORD = "xxx";
     /**
-     * FTP服务器基础目录
+     * FTP服务器基础目录（不要修改此处）
      */
     private static String BASEPATH = "";
     /**
