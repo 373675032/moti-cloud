@@ -68,4 +68,4 @@
 
 **开源不易，请作者喝杯咖啡吧~☕**
 
-![](https://github.com/373675032/moti-cloud/blob/master/wechat.jpg)
+![](http://xuewei.world:8000/wp-content/uploads/2020/06/image-219x300.png)
