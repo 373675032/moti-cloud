@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+	<title>莫提网盘-我的视频</title>
+
+	<link rel="stylesheet" href="u-admin/dist/modules/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="u-admin/dist/modules/ionicons/css/ionicons.min.css">
+	<link rel="stylesheet" href="u-admin/dist/modules/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css">
+
+	<link rel="stylesheet" href="u-admin/dist/modules/summernote/summernote-lite.css">
+	<link rel="stylesheet" href="u-admin/dist/modules/flag-icon-css/css/flag-icon.min.css">
+	<link rel="stylesheet" href="u-admin/dist/css/demo.css">
+	<link rel="stylesheet" href="u-admin/dist/css/style.css">
+	<link rel="stylesheet" href="plug-ins/xcConfirm/css/xcConfirm.css">
+	<link rel="stylesheet" href="plug-ins/context-menu/css/contextMenu.css">
+	<style>
+		.files-items{
+			margin-top: -20px;
+			border-bottom: 1px dashed #bdc3c7;
+			border-top: 1px dashed #bdc3c7;
+		}
+		.files-items:hover{
+			background: #F4FBFF;
+		}
+	</style>
+
+</head>
+
+<body>
+<div id="app">
+	<div class="main-wrapper">
+		<div class="navbar-bg"></div>
+		<div th:replace="commons/bar::#top"></div>
+		<div th:replace="commons/bar::#sidebar(currUri='video',statistics = ${statistics})"></div>
+
+		<div class="main-content">
+			<section class="section">
+				<h1 class="section-header">
+					<div><i class="ion ion-folder"></i> 我的视频</div>
+				</h1>
+				<div class="row" style="margin-top: -10px;">
+						<div class="col-12 col-sm-12 col-lg-12 table-responsive">
+							<table class="table tab-bordered text-nowrap" id="files-table">
+								<tr id="files-table-title" class="empty-space" th:if="${files.size() > 0}">
+									<th></th>
+									<th>名称</th>
+									<th>类型</th>
+									<th>扩展名</th>
+									<th>大小</th>
+									<th>下载次数</th>
+									<th>上传时间</th>
+								</tr>
+								<tr th:each="f:${files}" class="files-items files">
+									<td><span style="display: none" th:text="${f.myFileId}"></span>
+										<i style="font-size: 24px;color: #3498db" th:if="${f.type == 1}" class="icon ion-document-text"></i>
+										<i style="font-size: 24px;color: #28a745" th:if="${f.type == 2}" class="icon ion-image"></i>
+										<i style="font-size: 24px;color: #FFC107" th:if="${f.type == 3}" class="icon ion-ios-videocam"></i>
+										<i style="font-size: 24px;color: #dc3545" th:if="${f.type == 4}" class="icon ion-ios-musical-notes"></i>
+										<i style="font-size: 24px;color: #343A40" th:if="${f.type == 5}" class="icon ion-document"></i>
+									</td>
+									<td>
+										<a th:href="'javaScript:download('+${f.getMyFileId()}+')'" style="font-weight: 700;color: black" th:text="${f.myFileName}"></a>
+									</td>
+									<td style="font-weight: 300" th:if="${f.type == 1}">文档</td>
+									<td style="font-weight: 300" th:if="${f.type == 2}">图像</td>
+									<td style="font-weight: 300" th:if="${f.type == 3}">视频</td>
+									<td style="font-weight: 300" th:if="${f.type == 4}">音乐</td>
+									<td style="font-weight: 300" th:if="${f.type == 5}">其他</td>
+									<td style="font-weight: 300" th:text="${f.postfix}"></td>
+									<td style="font-weight: 300" th:if="${f.size > 1024}" th:text="${f.size/1024 +'MB'}"></td>
+									<td style="font-weight: 300" th:if="${f.size < 1024}" th:text="${f.size +'KB'}"></td>
+									<td style="font-weight: 300" th:text="${f.downloadTime} + ' 次'"></td>
+									<td style="font-weight: 300" th:text="${#dates.format(f.uploadTime,'yyyy-MM-dd HH:mm')}">2020-02-02 15:08</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				<div class="row" th:if="${files.size() == 0}">
+					<div class="col-12 col-sm-12 col-lg-12">
+						<div class="alert alert-primary alert-has-icon alert-dismissible show fade">
+							<div class="alert-icon"><i class="ion ion-ios-lightbulb-outline"></i></div>
+							<div class="alert-body">
+								<button class="close" data-dismiss="alert">
+									<span>×</span>
+								</button>
+								<div class="alert-title">这里空空的，什么都没有..</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<span id="tarFile" style="display: none"></span>
+		</div>
+		<div th:replace="commons/bar::#footer"></div>
+	</div>
+</div>
+<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+<script>
+	$(function () {
+		$('.files').dblclick(function () {
+			let id = $(this).children("td").children("span").html();
+			if (id != ""){
+				download(id);
+			}else{
+				return;
+			}
+		});
+		$('.files').hover(function () {
+			let id = $(this).children("td").children("span").html();
+			$('#tarFile').html(id);
+			$(this).siblings().removeClass('flag');
+			$(this).addClass('flag');
+		},function () {
+		});
+	});
+	function download(id) {
+		permission = [[${permission}]];
+		if (permission == 2){
+			alert("可能因为你的违规操作，您暂时无法下载文件！");
+			return;
+		}
+		var location = window.location.href;
+		let strings = location.split("moti-cloud");
+		window.location.href = strings[0]+"moti-cloud/downloadFile?time="+new Date().getTime()+"&tip="+Math.random()*1000000+"&fId="+id;
+	}
+</script>
+<script src="plug-ins/context-menu/js/jquery.contextMenu.min.js"></script>
+<script src="plug-ins/xcConfirm/js/xcConfirm.js"></script>
+<script>
+	$(".files").contextMenu({
+		width: 100, // width
+		itemHeight: 30, // 菜单项height
+		bgColor: "#fff", // 背景颜色
+		color: "#333", // 字体颜色
+		fontSize: 12, // 字体大小
+		hoverBgColor: "#3498db", // hover背景颜色
+		target: function(ele) { // 当前元素
+			console.log(ele);
+		},
+		menu: [{ // 菜单项
+			text: " 下载",
+			callback: function() {
+				let id = $('#tarFile').html();
+				if (id != ""){
+					download(id);
+				}else{
+					return;
+				}
+			}
+		},
+			{
+				text: " 分享",
+				callback: function() {
+					var location = window.location.href;
+					let strings = location.split("moti-cloud");
+					$.ajax({
+						url:"getQrCode/?id="+$('#tarFile').html()+"&url="+strings[0]+"moti-cloud",
+						type:"get",
+						async:false,
+						success:function(data){
+							var txt=  "<img src='"+data['imgPath']+"' style='width: 150px;height: 150px'/><br>" +
+									"<input style='width: 80%;font-size: 14px' value='"+data['url']+"'/>";
+							var option = {
+								title: "分享你的文件",
+							};
+							window.wxc.xcConfirm(txt, "custom", option);
+						}
+					});
+				}
+			},
+			{
+				text: " 重命名",
+				callback: function() {
+					let id = $('.flag td span').html();
+					let name = $('.flag td a').html();
+					let html = $('.flag td').eq(1).html($('' +
+							"<form id='updateFileNameForm' action='updateFileName' method='post'>" +
+							"<input id='updateFileName' name='myFileName' autocomplete='off' type='text' onblur='checkUpdateFile()' value='"+name+"'>" +
+							"<input type='hidden' name='myFileId' value='"+id+"'>" +
+							"</form>" +
+							''));
+				}
+			},
+			{
+				text: " 删除",
+				callback: function() {
+					let id = $('#tarFile').html();
+					var location = window.location.href;
+					let strings = location.split("moti-cloud");
+					if (id != ""){
+						window.location.href = strings[0]+"moti-cloud/deleteFile?fId="+id+"&folder="+$('#nowF').html();
+					}else{
+						return;
+					}
+				}
+			}
+		]
+
+	});
+	function checkUpdateFile() {
+		var name = $.trim($("#updateFileName").val());
+		var nameReg = /^[^\u4E00-\u9FA5\uF900-\uFA2D\w-_]{2,20}$/;
+		if (!nameReg.test(name)) {
+			alert("文件夹格式错误！【汉字、字母、数字】");
+			var location = window.location.href;
+			window.location.href = location;
+		}else{
+			$('#updateFileNameForm').submit();
+		}
+	}
+</script>
+<script src="u-admin/dist/modules/jquery.min.js"></script>
+<script src="u-admin/dist/modules/popper.js"></script>
+<script src="u-admin/dist/modules/tooltip.js"></script>
+<script src="u-admin/dist/modules/bootstrap/js/bootstrap.min.js"></script>
+<script src="u-admin/dist/modules/nicescroll/jquery.nicescroll.min.js"></script>
+<script src="u-admin/dist/modules/scroll-up-bar/dist/scroll-up-bar.min.js"></script>
+<script src="u-admin/dist/js/sa-functions.js"></script>
+
+<script src="u-admin/dist/modules/chart.min.js"></script>
+<script src="u-admin/dist/modules/summernote/summernote-lite.js"></script>
+
+<script src="u-admin/dist/js/scripts.js"></script>
+<script src="u-admin/dist/js/custom.js"></script>
+<script src="u-admin/dist/js/demo.js"></script>
+<script src="u-admin/dist/modules/chart.min.js"></script>
+</body>
+</html>

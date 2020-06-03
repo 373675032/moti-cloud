@@ -1,0 +1,269 @@
+body {
+    display: flex;
+    height: 100vh;
+    min-height: 35rem;
+    align-items: center;
+    justify-content: center;
+    font-family: josefin sans, sans-serif
+}
+
+.card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%)
+}
+
+.card-wrap {
+    position: relative;
+    margin: 0 auto
+}
+
+@media (min-width: 769px) {
+    .card-wrap {
+        max-width: 450px
+    }
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center
+}
+
+.card-body p {
+    font-size: 1.1rem
+}
+
+.card-title {
+    font-weight: 700;
+    font-size: 1.8rem
+}
+
+.badge-wrap {
+    display: flex;
+    justify-content: center
+}
+
+.badge-wrap a.badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 0 .2rem;
+    padding: 0;
+    opacity: .7;
+    border-radius: 50%;
+    transition: opacity .3s ease-in;
+    font-size: 1rem;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer
+}
+
+.badge-wrap a.badge:hover {
+    opacity: 1;
+    color: #fff
+}
+
+.btn {
+    color: #fff !important;
+    width: 10em;
+    transition: all .4s;
+    border-radius: 20px;
+    border: 2px solid transparent
+}
+
+.btn.btn-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 0;
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.5rem;
+    border: 0
+}
+
+.btn.btn-back:hover {
+    border: 0 !important
+}
+
+.form-control {
+    font-family: handle, cursive
+}
+
+.form-control::-webkit-input-placeholder {
+    font-family: josefin sans, sans-serif;
+    letter-spacing: .1em;
+    font-size: .9rem
+}
+
+.form-control:-ms-input-placeholder {
+    font-family: josefin sans, sans-serif;
+    letter-spacing: .1em;
+    font-size: .9rem
+}
+
+.form-control::-ms-input-placeholder {
+    font-family: josefin sans, sans-serif;
+    letter-spacing: .1em;
+    font-size: .9rem
+}
+
+.form-control::placeholder {
+    font-family: josefin sans, sans-serif;
+    letter-spacing: .1em;
+    font-size: .9rem
+}
+
+.card--welcome {
+    z-index: 3
+}
+
+.card--welcome .card-title {
+    color: #ee9ca7
+}
+
+.card--welcome .btn-wrap {
+    display: flex;
+    flex-direction: column
+}
+
+.card--welcome .btn {
+    color: #fff;
+    transition: all .3s
+}
+
+.card--welcome .btn:hover {
+    background-color: rgba(238, 156, 167, .25);
+    font-weight: 700
+}
+
+.card--welcome .btn-register {
+    margin-bottom: .8em;
+    background-color: #ee9ca7
+}
+
+.card--welcome .btn-register:hover {
+    color: #ee9ca7
+}
+
+.card--welcome .btn-login {
+    background-color: #a7bfe8
+}
+
+.card--register .card-title {
+    color: #ee9ca7
+}
+
+.card--register .badge {
+    background-color: #ee9ca7
+}
+
+.card--register .btn {
+    background-color: #ee9ca7
+}
+
+.card--register .btn:hover {
+    background-color: #fff;
+    color: #ee9ca7 !important;
+    font-weight: 700;
+    border: 2px solid rgba(238, 156, 167, .25)
+}
+
+.card--register .btn:focus {
+    box-shadow: 0 0 0 .2rem rgba(238, 156, 167, .25)
+}
+
+.card--register .form-control {
+    color: #ee9ca7;
+    border-color: rgba(238, 156, 167, .25)
+}
+
+.card--register .form-control:focus {
+    box-shadow: 0 0 0 .2rem rgba(238, 156, 167, .25)
+}
+
+.card--login .card-title {
+    color: #a7bfe8
+}
+
+.card--login .badge {
+    background-color: #a7bfe8
+}
+
+.card--login .btn {
+    background-color: #a7bfe8
+}
+
+.card--login .btn:hover {
+    background-color: #fff;
+    color: #a7bfe8 !important;
+    font-weight: 700;
+    border: 2px solid rgba(167, 191, 232, .25)
+}
+
+.card--login .btn:focus {
+    box-shadow: 0 0 0 .2rem rgba(167, 191, 232, .25)
+}
+
+.card--login .form-control {
+    color: #a7bfe8;
+    border-color: rgba(167, 191, 232, .25)
+}
+
+.card--login .form-control:focus {
+    box-shadow: 0 0 0 .2rem rgba(167, 191, 232, .25)
+}
+
+body {
+    background: linear-gradient(to right, #ffdde1, #ee9ca7, #a7bfe8, #6190e8);
+    background-size: 500% 500%;
+    transition: background 3s ease;
+    background-position: 50% 50%
+}
+
+body.is-register {
+    background-position: 0% 50%
+}
+
+body.is-login {
+    background-position: 100% 50%
+}
+
+.card {
+    transition: all .3s .1s ease-out
+}
+
+.card:not(.is-show) {
+    opacity: 0;
+    -webkit-transform: translate(-50%, -50%) rotateX(95deg);
+    transform: translate(-50%, -50%) rotateX(95deg)
+}
+
+.card.is-show {
+    opacity: 1;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    z-index: 5
+}
+#btnSendCode1{
+    width: 90px;
+    height: 30px;
+    padding: 0 5px;
+    font-size: 14px;
+    text-align: center;
+    border-radius: 30px;
+    color: #a07941;
+    border-color: #a07941;
+    position: relative;
+    left: 50px;
+}

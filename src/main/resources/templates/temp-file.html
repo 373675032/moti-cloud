@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>莫提网盘-临时文件</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css'>
+
+<!--    <link rel='stylesheet' href='https://ajax.aspnetcdn.com/ajax/bootstrap/4.2.1/css/bootstrap.min.css'>-->
+
+    <link rel="stylesheet" href="u-admin/dist/modules/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/upload-file.css">
+</head>
+<body>
+<div class="container">
+    <div class="card-wrap">
+        <div class="card border-0 shadow card--welcome is-show" id="welcome">
+            <div class="card-body">
+                <h2 class="card-title">上传结果</h2>
+                <br>
+                <label>
+                    <img style="height: 200px" th:src="${session.imgPath}" alt="">
+                </label>
+                <textarea class="form-control" th:text="${session.url}"></textarea>
+                <br>
+                <p th:text="${session.msg}"></p>
+                <p class="badge-wrap">
+                    <a href="/moti-cloud" title="返回登录注册页面" class="badge btn-upload js-btn btn-success"><i class="fa fa-backward" aria-hidden="true"></i></a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

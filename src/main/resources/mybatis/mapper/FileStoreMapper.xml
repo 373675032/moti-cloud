@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moti.mapper.FileStoreMapper">
+    <!--开启二级缓存,使用Ehcache缓存框架-->
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+
+    <sql id="commonsKey">
+        file_store_id,user_id,current_size,max_size,permission
+    </sql>
+
+    <insert id="addFileStore" useGeneratedKeys="true" keyProperty="fileStoreId">
+        insert into file_store(user_id) values (#{userId})
+    </insert>
+    <select id="getFileStoreByUserId" resultType="com.moti.entity.FileStore">
+        select <include refid="commonsKey"/> from file_store
+        <where>
+            user_id = #{userId}
+        </where>
+    </select>
+    <select id="getFileStoreById" resultType="com.moti.entity.FileStore">
+        select <include refid="commonsKey"/> from file_store
+        <where>
+            file_store_id = #{fileStoreId}
+        </where>
+    </select>
+    <update id="addSize">
+        update file_store set current_size = current_size + #{size} where file_store_id = #{id}
+    </update>
+    <update id="subSize">
+        update file_store set current_size = current_size - #{size} where file_store_id = #{id}
+    </update>
+    <update id="updatePermission">
+        update file_store set permission = #{permission},max_size = #{size} where user_id = #{id}
+    </update>
+    <delete id="deleteById">
+        delete from file_store where file_store_id = #{id}
+    </delete>
+</mapper>

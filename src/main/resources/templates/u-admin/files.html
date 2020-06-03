@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+	<title>莫提网盘-我的文件</title>
+
+	<link rel="stylesheet" href="u-admin/dist/modules/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="u-admin/dist/modules/ionicons/css/ionicons.min.css">
+	<link rel="stylesheet" href="u-admin/dist/modules/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css">
+
+	<link rel="stylesheet" href="u-admin/dist/modules/summernote/summernote-lite.css">
+	<link rel="stylesheet" href="u-admin/dist/modules/flag-icon-css/css/flag-icon.min.css">
+	<link rel="stylesheet" href="u-admin/dist/css/demo.css">
+	<link rel="stylesheet" href="u-admin/dist/css/style.css">
+	<link rel="stylesheet" href="plug-ins/xcConfirm/css/xcConfirm.css">
+	<link rel="stylesheet" href="plug-ins/context-menu/css/contextMenu.css">
+	<style>
+		.files-items{
+			margin-top: -20px;
+			border-bottom: 1px dashed #bdc3c7;
+			border-top: 1px dashed #bdc3c7;
+		}
+		.files-items:hover{
+			background: #F4FBFF;
+		}
+	</style>
+
+</head>
+
+<body>
+<div id="app">
+	<div class="main-wrapper">
+		<div class="navbar-bg"></div>
+		<div th:replace="commons/bar::#top"></div>
+		<div th:replace="commons/bar::#sidebar(currUri='all',statistics = ${statistics})"></div>
+
+		<div class="main-content">
+			<section class="section">
+				<h1 class="section-header">
+					<div><i class="ion ion-folder"></i> 全部文件 <span style="color: red;font-size: 14px" th:if="${error != null}" th:text="${error}"></span></div>
+				</h1>
+				<div class="row">
+					<div class="col-12 col-sm-12 col-lg-12">
+						<div class="card">
+						<div class="card-body">
+							<nav aria-label="breadcrumb" class="empty-space">
+								<ol class="breadcrumb">
+									<li class="breadcrumb-item"><a
+											th:href="@{/files(fId=${nowFolder.fileFolderId})}"
+											title="刷新"><i
+											class="icon ion-refresh"></i></a>
+									</li>
+									<li th:class="${nowFolder.fileFolderId == 0?'breadcrumb-item active':'breadcrumb-item'}">
+                                                            <span th:if="${nowFolder.fileFolderId == 0}"
+																  th:text="根目录"></span><a style="font-weight: bold"
+																						  th:if="${nowFolder.fileFolderId != 0}"
+																						  href="files">根目录</a></li>
+									<li th:each="l:${location}" class="breadcrumb-item"><a
+											style="font-weight: bold"
+											th:href="@{/files(fId=${l.fileFolderId},fName=${l.fileFolderName})}"
+											th:text="${l.fileFolderName}"></a></li>
+									<li th:if="${nowFolder.fileFolderId != 0}"
+										class="breadcrumb-item active" aria-current="page"
+										th:text="${nowFolder.fileFolderName}"></li>
+									<li th:if="${nowFolder.fileFolderId != 0}"
+										class="breadcrumb-item"><a
+											th:href="@{/files(fId=${nowFolder.parentFolderId})}"
+											title="返回上一层"><i
+											class="icon ion-arrow-return-left"></i></a>
+									</li>
+								</ol>
+							</nav>
+							<div class="row" style="margin-top: -10px;">
+								<div class="col-12 col-sm-12 col-lg-12 table-responsive">
+									<table class="table tab-bordered text-nowrap" id="files-table">
+										<tr id="files-table-title" class="empty-space">
+											<th></th>
+											<th>名称</th>
+											<th>类型</th>
+											<th>扩展名</th>
+											<th>大小</th>
+											<th>下载次数</th>
+											<th>上传时间</th>
+										</tr>
+										<tr th:each="folder:${folders}" class="files-items folders">
+											<td><span style="display: none" th:text="${folder.fileFolderId}"></span><i style="font-size: 24px;color: orange" class="icon ion-android-folder"></i></td>
+											<td>
+												<a th:href="@{/files(fId=${folder.fileFolderId},fName=${folder.fileFolderName})}" style="font-weight: 700;color: black" th:text="${folder.fileFolderName}"></a>
+											</td>
+											<td style="font-weight: 300">文件夹</td>
+											<td style="font-weight: 300">-</td>
+											<td style="font-weight: 300">-</td>
+											<td style="font-weight: 300">-</td>
+											<td style="font-weight: 300" th:text="${#dates.format(folder.time,'yyyy-MM-dd HH:mm')}"></td>
+										</tr>
+										<tr th:each="f:${files}" class="files-items files">
+											<td><span style="display: none" th:text="${f.myFileId}"></span>
+												<i style="font-size: 24px;color: #3498db" th:if="${f.type == 1}" class="icon ion-document-text"></i>
+												<i style="font-size: 24px;color: #28a745" th:if="${f.type == 2}" class="icon ion-image"></i>
+												<i style="font-size: 24px;color: #FFC107" th:if="${f.type == 3}" class="icon ion-ios-videocam"></i>
+												<i style="font-size: 24px;color: #dc3545" th:if="${f.type == 4}" class="icon ion-ios-musical-notes"></i>
+												<i style="font-size: 24px;color: #343A40" th:if="${f.type == 5}" class="icon ion-document"></i>
+											</td>
+											<td>
+												<a th:href="'javaScript:download('+${f.myFileId}+')'" style="font-weight: 700;color: black" th:text="${f.myFileName}"></a>
+											</td>
+											<td style="font-weight: 300" th:if="${f.type == 1}">文档</td>
+											<td style="font-weight: 300" th:if="${f.type == 2}">图像</td>
+											<td style="font-weight: 300" th:if="${f.type == 3}">视频</td>
+											<td style="font-weight: 300" th:if="${f.type == 4}">音乐</td>
+											<td style="font-weight: 300" th:if="${f.type == 5}">其他</td>
+											<td style="font-weight: 300" th:text="${f.postfix}"></td>
+											<td style="font-weight: 300" th:if="${f.size > 1024}" th:text="${f.size/1024 +'MB'}"></td>
+											<td style="font-weight: 300" th:if="${f.size < 1024}" th:text="${f.size +'KB'}"></td>
+											<td style="font-weight: 300" th:text="${f.downloadTime} + ' 次'"></td>
+											<td style="font-weight: 300" th:text="${#dates.format(f.uploadTime,'yyyy-MM-dd HH:mm')}">2020-02-02 15:08</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-12">
+									<div class="float-right">
+										<a href="javaScript:addFolderElement()" class="btn btn-sm btn-outline-success"><i class="icon ion-plus"></i> 创建文件夹</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					</div>
+				</div>
+				<span id="nowF" style="display: none" th:text="${nowFolder.fileFolderId}"></span>
+				<span id="preF" style="display: none" th:text="${nowFolder.parentFolderId}"></span>
+				<span id="tarFolder" style="display: none"></span>
+				<span id="tarFile" style="display: none"></span>
+			</section>
+		</div>
+		<div th:replace="commons/bar::#footer"></div>
+	</div>
+</div>
+<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+<script>
+	$(function () {
+		$('.folders').dblclick(function () {
+			let id = $(this).children("td").children("span").html();
+			var location = window.location.href;
+			let strings = location.split("?");
+			if (id != ""){
+				window.location.href = strings[0]+"?fId="+id;
+			}else{
+				return;
+			}
+		});
+		$('.files').dblclick(function () {
+			let id = $(this).children("td").children("span").html();
+			if (id != ""){
+				download(id);
+			}else{
+				return;
+			}
+		});
+		$('.folders').hover(function () {
+			let id = $(this).children("td").children("span").html();
+			$('#tarFolder').html(id);
+			$(this).siblings().removeClass('flag');
+			$(this).addClass('flag');
+		},function () {
+		});
+		$('.files').hover(function () {
+			let id = $(this).children("td").children("span").html();
+			$('#tarFile').html(id);
+			$(this).siblings().removeClass('flag');
+			$(this).addClass('flag');
+		},function () {
+		});
+	});
+	function download(id) {
+		permission = [[${permission}]];
+		if (permission == 2){
+			alert("可能因为你的违规操作，您暂时无法下载文件！");
+			return;
+		}
+		var location = window.location.href;
+		let strings = location.split("moti-cloud");
+		window.location.href = strings[0]+"moti-cloud/downloadFile?time="+new Date().getTime()+"&tip="+Math.random()*1000000+"&fId="+id;
+	}
+</script>
+<script src="plug-ins/context-menu/js/jquery.contextMenu.min.js"></script>
+<script src="plug-ins/xcConfirm/js/xcConfirm.js"></script>
+<script>
+	$(".files").contextMenu({
+		width: 100, // width
+		itemHeight: 30, // 菜单项height
+		bgColor: "#fff", // 背景颜色
+		color: "#333", // 字体颜色
+		fontSize: 12, // 字体大小
+		hoverBgColor: "#3498db", // hover背景颜色
+		target: function(ele) { // 当前元素
+			console.log(ele);
+		},
+		menu: [{ // 菜单项
+			text: " 下载",
+			callback: function() {
+				let id = $('#tarFile').html();
+				if (id != ""){
+					download(id);
+				}else{
+					return;
+				}
+			}
+		},
+			{
+				text: " 分享",
+				callback: function() {
+					var location = window.location.href;
+					let strings = location.split("moti-cloud");
+					$.ajax({
+						url:"getQrCode/?id="+$('#tarFile').html()+"&url="+strings[0]+"moti-cloud",
+						type:"get",
+						async:false,
+						success:function(data){
+							var txt=  "<img src='"+data['imgPath']+"' style='width: 150px;height: 150px'/><br>" +
+									"<input style='width: 80%;font-size: 14px' value='"+data['url']+"'/>";
+							var option = {
+								title: "分享你的文件",
+							};
+							window.wxc.xcConfirm(txt, "custom", option);
+						}
+					});
+				}
+			},
+			{
+				text: " 重命名",
+				callback: function() {
+					let id = $('.flag td span').html();
+					let name = $('.flag td a').html();
+					let html = $('.flag td').eq(1).html($('' +
+							"<form id='updateFileNameForm' action='updateFileName' method='post'>" +
+							"<input id='updateFileName' name='myFileName' autocomplete='off' type='text' onblur='checkUpdateFile()' value='"+name+"'>" +
+							"<input type='hidden' name='myFileId' value='"+id+"'>" +
+							"</form>" +
+							''));
+				}
+			},
+			{
+				text: " 删除",
+				callback: function() {
+					let id = $('#tarFile').html();
+					var location = window.location.href;
+					let strings = location.split("moti-cloud");
+					if (id != ""){
+						window.location.href = strings[0]+"moti-cloud/deleteFile?fId="+id+"&folder="+$('#nowF').html();
+					}else{
+						return;
+					}
+				}
+			}
+		]
+
+	});
+	$(".folders").contextMenu({
+		width: 100, // width
+		itemHeight: 30, // 菜单项height
+		bgColor: "#fff", // 背景颜色
+		color: "#333", // 字体颜色
+		fontSize: 12, // 字体大小
+		hoverBgColor: "#3498db", // hover背景颜色
+		target: function(ele) { // 当前元素
+			console.log(ele);
+		},
+		menu: [{ // 菜单项
+			text: " 打开",
+			callback: function() {
+				let id = $('#tarFolder').html();
+				var location = window.location.href;
+				let strings = location.split("?");
+				if (id != ""){
+					window.location.href = strings[0]+"?fId="+id;
+				}else{
+					return;
+				}
+			}
+		},
+			{
+				text: " 返回上一级",
+				callback: function() {
+					toPreFolder();
+				}
+			},
+			{
+				text: " 重命名",
+				callback: function() {
+					let id = $('.flag td span').html();
+					let name = $('.flag td a').html();
+					let html = $('.flag td').eq(1).html($('' +
+							"<form id='updateFolderForm' action='updateFolder' method='post'>" +
+							"<input id='updateFolderName' name='fileFolderName' autocomplete='off' type='text' onblur='checkUpdateFolder()' value='"+name+"'>" +
+							"<input type='hidden' name='fileFolderId' value='"+id+"'>" +
+							"</form>" +
+							''));
+				}
+			},
+			{
+				text: " 新建文件夹",
+				callback: function() {
+					addFolderElement();
+				}
+			},
+			{
+				text: " 清空并删除",
+				callback: function() {
+					let id = $('#tarFolder').html();
+					var location = window.location.href;
+					let strings = location.split("moti-cloud");
+					if (id != ""){
+						window.location.href = strings[0]+"moti-cloud/deleteFolder?fId="+id;
+					}else{
+						return;
+					}
+				}
+			}
+		]
+
+	});
+	$(".empty-space").contextMenu({
+		width: 100, // width
+		itemHeight: 30, // 菜单项height
+		bgColor: "#fff", // 背景颜色
+		color: "#333", // 字体颜色
+		fontSize: 12, // 字体大小
+		hoverBgColor: "#3498db", // hover背景颜色
+		target: function(ele) { // 当前元素
+			console.log(ele);
+		},
+		menu: [
+			{
+				text: " 新建文件夹",
+				callback: function() {
+					addFolderElement();
+				}
+			},
+			{
+				text: " 返回上一级",
+				callback: function() {
+					toPreFolder();
+				}
+			}
+		]
+
+	});
+	function toPreFolder() {
+		var location = window.location.href;
+		let strings = location.split("?");
+		var pre = $('#preF').html();
+		if (pre != ""){
+			window.location.href = strings[0]+"?fId="+pre;
+		}else{
+			return;
+		}
+	}
+	function addFolderElement() {
+		var now = $('#nowF').html();
+		$("<tr class='files-items folders'><td><i style='font-size: 24px;color: orange' class='icon ion-android-folder'></i></td>" +
+				"<td>" +
+				"<form id='addFolderForm' action='addFolder' method='post'>" +
+				"<input id='newFolder'  autocomplete='off' name='fileFolderName' type='text' onblur='checkAddFolder()'>" +
+				"<input type='hidden' name='parentFolderId' value='"+now+"'>" +
+				"</form>" +
+				"</td>" +
+				"<td style='font-weight: 300'>文件夹</td>" +
+				"<td style='font-weight: 300'>-</td>" +
+				"<td style='font-weight: 300'>-</td>" +
+				"</tr>").insertAfter($('#files-table-title'));
+		$('#newFolder').focus();
+	}
+	function checkAddFolder() {
+		var name = $.trim($("#newFolder").val());
+		var nameReg = /^[\u4E00-\u9FA5A-Za-z0-9]{1,20}$/;
+		if (!nameReg.test(name)) {
+			alert("文件夹格式错误！【汉字、字母、数字】");
+			var location = window.location.href;
+			window.location.href = location;
+		}else{
+			$('#addFolderForm').submit();
+		}
+	}
+	function checkUpdateFolder() {
+		var name = $.trim($("#updateFolderName").val());
+		var nameReg = /^[\u4E00-\u9FA5A-Za-z0-9]{2,20}$/;
+		if (!nameReg.test(name)) {
+			alert("文件夹格式错误！【汉字、字母、数字】");
+			var location = window.location.href;
+			window.location.href = location;
+		}else{
+			$('#updateFolderForm').submit();
+		}
+	}
+	function checkUpdateFile() {
+		var name = $.trim($("#updateFileName").val());
+		var nameReg = /^[^\u4E00-\u9FA5\uF900-\uFA2D\w-_]{2,20}$/;
+		if (!nameReg.test(name)) {
+			alert("文件夹格式错误！【汉字、字母、数字】");
+			var location = window.location.href;
+			window.location.href = location;
+		}else{
+			$('#updateFileNameForm').submit();
+		}
+	}
+</script>
+<script src="u-admin/dist/modules/jquery.min.js"></script>
+<script src="u-admin/dist/modules/popper.js"></script>
+<script src="u-admin/dist/modules/tooltip.js"></script>
+<script src="u-admin/dist/modules/bootstrap/js/bootstrap.min.js"></script>
+<script src="u-admin/dist/modules/nicescroll/jquery.nicescroll.min.js"></script>
+<script src="u-admin/dist/modules/scroll-up-bar/dist/scroll-up-bar.min.js"></script>
+<script src="u-admin/dist/js/sa-functions.js"></script>
+
+<script src="u-admin/dist/modules/chart.min.js"></script>
+<script src="u-admin/dist/modules/summernote/summernote-lite.js"></script>
+
+<script src="u-admin/dist/js/scripts.js"></script>
+<script src="u-admin/dist/js/custom.js"></script>
+<script src="u-admin/dist/js/demo.js"></script>
+<script src="u-admin/dist/modules/chart.min.js"></script>
+</body>
+</html>

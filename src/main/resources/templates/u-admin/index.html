@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+	<title>莫提网盘-使用情况</title>
+
+	<link rel="stylesheet" href="u-admin/dist/modules/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="u-admin/dist/modules/ionicons/css/ionicons.min.css">
+	<link rel="stylesheet" href="u-admin/dist/modules/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css">
+
+	<link rel="stylesheet" href="u-admin/dist/modules/summernote/summernote-lite.css">
+	<link rel="stylesheet" href="u-admin/dist/modules/flag-icon-css/css/flag-icon.min.css">
+	<link rel="stylesheet" href="u-admin/dist/css/demo.css">
+	<link rel="stylesheet" href="u-admin/dist/css/style.css">
+</head>
+
+<body>
+<div id="app">
+	<div class="main-wrapper">
+		<div class="navbar-bg"></div>
+
+		<div th:replace="commons/bar::#top"></div>
+		<div th:replace="commons/bar::#sidebar(currUri='index',statistics = ${statistics})"></div>
+		<div class="main-content">
+			<section class="section">
+				<h1 class="section-header">
+					<div><i class="ion ion-speedometer"></i> 使用情况</div>
+				</h1>
+				<div class="row">
+					<div class="col-12 col-sm-6 col-lg-8">
+						<div class="row">
+							<div class="col-lg-6 col-md-6 col-12">
+								<div class="card card-sm-4">
+									<div class="card-icon bg-primary">
+										<i class="ion ion-ios-folder"></i>
+									</div>
+									<div class="card-wrap">
+										<div class="card-header">
+											<h4>文件夹</h4>
+										</div>
+										<div class="card-body" th:text="${statistics.folderCount}"></div>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6 col-md-6 col-12">
+								<div class="card card-sm-4">
+									<div class="card-icon bg-danger">
+										<i class="ion ion-android-document"></i>
+									</div>
+									<div class="card-wrap">
+										<div class="card-header">
+											<h4>文件</h4>
+										</div>
+										<div class="card-body" th:text="${statistics.fileCount}"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6 col-md-6 col-12">
+								<div class="card">
+									<div class="card-header">
+										<h4>文件明细情况</h4>
+									</div>
+									<div class="card-body">
+										<canvas id="myChart"></canvas>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6 col-md-6 col-12">
+								<div class="card">
+									<div class="card-header">
+										<h4>已使用/剩余容量（当前最大容量：[[${statistics.fileStore.maxSize/1024}]]MB）</h4>
+									</div>
+									<div class="card-body">
+										<canvas id="myChart1"></canvas>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-sm-6 col-lg-4">
+						<div class="card" id="mycard-dimiss">
+							<div class="card-header">
+								<div class="float-right">
+									<a data-dismiss="#mycard-dimiss" class="btn btn-icon"><i class="ion ion-close"></i></a>
+								</div>
+								<h4>项目介绍</h4>
+							</div>
+							<div class="card-body">
+								<p>
+									莫提网盘（英文名：moti-cloud）是由个人开发者推出的在线存储服务。
+								</p>
+								<hr>
+								<p>
+									用户可以轻松将自己的文件上传到网盘上，并可跨终端随时随地查看和分享。<br>
+									无需注册，使用QQ一键登录，注重用户的隐私。<br>
+									具有安全、简约、高效、不限速的特点。
+								</p>
+								<hr>
+								<p class='author'>
+									作者：<a href="http://xuewei.world:8000/cn%e4%b8%b6moti/">莫提</a>
+								</p>
+							</div>
+							<div class="card-footer">
+								<small>COPYRIGHT © 2020  版权所有 莫提网盘</small>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+		<div th:replace="commons/bar::#footer"></div>
+	</div>
+</div>
+<script src="u-admin/dist/modules/jquery.min.js"></script>
+<script>
+	$(function () {
+		var cur = [[${statistics.fileStore.currentSize}]];
+		var max = [[${statistics.fileStore.maxSize}]];
+		var w = cur/max*100;
+		$('#progress').css('width',w+'%');
+	})
+</script>
+<script src="u-admin/dist/modules/popper.js"></script>
+<script src="u-admin/dist/modules/tooltip.js"></script>
+<script src="u-admin/dist/modules/bootstrap/js/bootstrap.min.js"></script>
+<script src="u-admin/dist/modules/nicescroll/jquery.nicescroll.min.js"></script>
+<script src="u-admin/dist/modules/scroll-up-bar/dist/scroll-up-bar.min.js"></script>
+<script src="u-admin/dist/js/sa-functions.js"></script>
+
+<script src="u-admin/dist/modules/chart.min.js"></script>
+<script src="u-admin/dist/modules/summernote/summernote-lite.js"></script>
+
+<script src="u-admin/dist/js/scripts.js"></script>
+<script src="u-admin/dist/js/custom.js"></script>
+<script src="u-admin/dist/js/demo.js"></script>
+<script src="u-admin/dist/modules/chart.min.js"></script>
+<script>
+	var ctx = document.getElementById("myChart").getContext('2d');
+	var myChart = new Chart(ctx, {
+		type: 'doughnut',
+		data: {
+			datasets: [{
+				data: [
+					[[${statistics.doc}]],
+					[[${statistics.image}]],
+					[[${statistics.video}]],
+					[[${statistics.music}]],
+					[[${statistics.other}]],
+				],
+				backgroundColor: [
+					'#3498db',
+					'#28a745',
+					'#ffc107',
+					'#dc3545',
+					'#343a40',
+				],
+				label: 'Dataset 1'
+			}],
+			labels: [
+				'文档',
+				'图像',
+				'视频',
+				'音乐',
+				'其他'
+			],
+		},
+		options: {
+			responsive: true,
+			legend: {
+				position: 'bottom',
+			},
+		}
+	});
+
+</script>
+<script>
+	var ctx = document.getElementById("myChart1").getContext('2d');
+	var myChart = new Chart(ctx, {
+		type: 'doughnut',
+		data: {
+			datasets: [{
+				data: [
+					[[${statistics.fileStore.currentSize/1024}]],
+					[[${(statistics.fileStore.maxSize-statistics.fileStore.currentSize)/1024}]],
+				],
+				backgroundColor: [
+					'#223e36',
+					'#c6e6e8'
+				],
+				label: 'Dataset 1'
+			}],
+			labels: [
+				'已使用',
+				'剩余容量',
+			],
+		},
+		options: {
+			responsive: true,
+			legend: {
+				position: 'bottom',
+			},
+		}
+	});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+/* 第一部分，通用样式 */
+.easy-uploader .cursor-select {
+    cursor: pointer;
+    user-select: none;
+}
+.easy-uploader .btn {
+    display: inline-block;
+    margin-right: 6px;
+    padding: 6px 8px;
+    font-size: 12px;
+    color: #409eff;
+    border: 1px #409eff solid;
+    border-radius: 3px;
+    cursor: pointer;
+    user-select: none;
+}
+.easy-uploader .primary {
+    color: #fff;
+    background-color: #409eff;
+    border: 0;
+}
+.easy-uploader .danger {
+    color: #fff;
+    background-color: #f56c6c;
+    border: 0;
+}
+.easy-uploader .checkbox {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-size: 16px 16px;
+}
+.easy-uploader .unchecked {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAB/klEQVQ4T5WTMWgTYRiG3++/2uKqEOlmwalWUaLk7prk7CLqKFScFDG56yIuFbdaRXCwOChY79qhXS04KCi4mLuE5EItCkJadHNodSkOLk1798oFEmopJfm27//+9/nfH75XsKcKlYyuxeomgGEQJwmhAKsEG7EWL8xn6+FuibSbOz9ODDTXUw8hvEegDEidwJdkrogzAEwCJhSf4nBzyju3sp3MWoDpTxf61rWthDxE8tacFb7d6yzpi4F5XYhZAdYG4/7c9FhppwWwffMxBHZftH365djyr/3E7TM7SA8KBr4CfOXmaw+kUM6kVazVAVzxrOrHg8TtWbGiX5ZIvRO1kxY7MOeE0F2reqobcfuO45vfCFbFCYwKydCzwsleAHZgPBMgLbZv/AXkarf2Ow7KxiVQFsXxjQ2qeNzL1Su9OCiURnOaxK+TL3wA+N7Nhy96ATi+cReQi2KXjSeIkfKs2u0eAYtQ/CkTNf04m/KZh5D1zNpaNxAnyAwTWinScL61SI5v3qegGPdHo/N6/fdBkEKYOaY1tWWQz12rNtMCjBPakcAMAQ4BtF0rfLMfZMLXr8Uis0L5vpmvZpcE0X9h2tpIPRJwsh0mxXglEqUEOCuEkYRJgJnNo3+mlkYazU6Ydr/mlEwDijeSOBMYASQScBVAg8IFLxcma9+pf7Er0M3JZjQlAAAAAElFTkSuQmCC);
+}
+.easy-uploader .checked {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABwUlEQVQ4T42Ty2sTYRTFf+dzQoqrFlToyo0IggtRRGc0KVIf6cJ/oGpwlcGFuvOBe9GNCoJSi2BtC/4HpW5kJjW6dJOFuCgIoigSBUFjzVyZtAnTR0i+3T33nvMd7kNseBdfHRjOu6EzOPabuX1gOwR/MBaaye+ZZyfe/chSlA3CODhvxkOJ4Y3Ca3EjEVenC7XZTr4rUImPXhPubg/iOthIbj0pvr2dgm2BShScllgchNypSbDSdPHNoi5/2JNvft61LBjtJ2BmPxHbhXIGH/OjX/eqEvmTkub7kuFby7PAW+Ee0tm03szOqRL7z4Uu9BFomGcB/ygJ3e/UGswpjP0l0LE2aPbJxBehQ92i1DYUEONZ8mreXiuMghhRWLO0vM2tnGwluReSDmP8MiVj4I4IHm1yaVQVRv4MUjljqw7NU1h+HpfcxNzBLcnp/9jslk00rPa3lR/Pec1JZ3raqz/tJq6Oced7od39JpHNd8eYgmHVL2FaGFTA0gHCRHuROqQwCq4j7gwkYtyYGqu11379MUV+GekBMNLrmIArU8Xa3KZj6gCXqsdHkqRVRkwYDMn4bqIus7pz3svHhaVGVvw/Gf+svZgLZgkAAAAASUVORK5CYII=);
+}
+
+
+/* 第二部分，分别样式 */
+.easy-uploader .btn-box {
+    display: flex;
+    align-items: center;
+}
+.easy-uploader .list {
+    list-style: none;
+    padding-left: 0px;
+}
+.easy-uploader .list-item {
+    box-sizing: border-box;
+    position: relative;
+    margin-top: 10px;
+    padding: 10px 10px 10px 90px;
+    height: 72px;
+    background-color: #fff;
+    border: 1px solid #c0ccda;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.easy-uploader .preview {
+    position: relative;
+    z-index: 1;
+    float: left;
+    vertical-align: middle;
+    margin-left: -80px;
+    width: 50px;
+    height: 50px;
+}
+.easy-uploader .preview-img {
+    max-width: 50px;
+    max-height: 50px;
+}
+.easy-uploader .info {
+    position: relative;
+    margin-right: 40px;
+    padding-left: 4px;
+    color: #606266;
+}
+.easy-uploader .filename {
+    margin-top: 20px;
+    margin-right: 40px;
+    padding-left: 4px;
+    line-height: 20px;
+    color: #606266;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.easy-uploader .progress-wrapper {
+    position: relative;
+    height: 2px;
+    background-color: #eee;
+}
+.easy-uploader .progressbar {
+    height: 100%;
+    background-color: #409eff;
+}
+.easy-uploader .progress-text {
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translateY(-100%);
+    font-size: 14px;
+    line-height: 30px;
+    color: #606266;
+}
+.easy-uploader .delete-label {
+    box-sizing: border-box;
+    position: absolute;
+    right: -17px;
+    top: -7px;
+    z-index: 0;
+    padding-right: 12px;
+    width: 46px;
+    height: 36px;
+    text-align: center;
+    background-color: #13ce66;
+    transform: rotate(45deg);
+    box-shadow: 0 1px 1px #ccc;
+    border-radius: 50%;
+}
+.easy-uploader .delete-icon {
+    position: absolute;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #fff;
+    text-align: center;
+    transform: rotate(-45deg);
+}
+.easy-uploader .select-icon {
+    position: absolute;
+    right: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+}

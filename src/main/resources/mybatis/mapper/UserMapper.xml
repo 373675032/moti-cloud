@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moti.mapper.UserMapper">
+    <!--开启二级缓存,使用Ehcache缓存框架-->
+<!--    <cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
+    <!--user的映射结果集-->
+    <resultMap type="com.moti.entity.User" id="UserMap">
+        <result property="userId" column="user_id" jdbcType="OTHER"/>
+        <result property="openId" column="open_id" jdbcType="VARCHAR"/>
+        <result property="fileStoreId" column="file_store_id" jdbcType="INTEGER"/>
+        <result property="role" column="role" jdbcType="INTEGER"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="registerTime" column="register_time" jdbcType="TIMESTAMP"/>
+        <result property="imagePath" column="image_path" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--全部字段-->
+    <sql id="allColumn"> user_id, open_id, file_store_id, user_name,email,password,register_time, image_path,role</sql>
+    
+    <!--添加语句的字段列表-->
+    <sql id="insertColumn">
+        <if test="openId != null and openId != ''">
+                open_id,
+        </if>
+        <if test="fileStoreId != null">
+                file_store_id,
+        </if>
+        <if test="userName != null and userName != ''">
+                user_name,
+        </if>
+        <if test="email != null and email != ''">
+                email,
+        </if>
+        <if test="password != null and password != ''">
+                password,
+        </if>
+        <if test="registerTime != null">
+                register_time,
+        </if>
+        <if test="imagePath != null and imagePath != ''">
+                image_path,
+        </if>
+    </sql>
+    
+    <!--添加语句的值列表-->
+        <sql id="insertValue">
+        <if test="openId != null and openId != ''">
+                #{openId},
+        </if>
+        <if test="fileStoreId != null">
+                #{fileStoreId},
+        </if>
+        <if test="userName != null and userName != ''">
+                #{userName},
+        </if>
+        <if test="email != null and email != ''">
+                #{email},
+        </if>
+        <if test="password != null and password != ''">
+                #{password},
+        </if>
+        <if test="registerTime != null">
+                #{registerTime},
+        </if>
+        <if test="imagePath != null and imagePath != ''">
+                #{imagePath},
+        </if>
+    </sql>
+    
+    <!--通用对User各个属性的值的非空判断-->
+    <sql id="commonsValue">
+        <if test="openId != null and openId != ''">
+                open_id = #{openId},
+        </if>
+        <if test="fileStoreId != null">
+                file_store_id = #{fileStoreId},
+        </if>
+        <if test="userName != null and userName != ''">
+                user_name = #{userName},
+        </if>
+        <if test="email != null and email != ''">
+                email = #{email},
+        </if>
+        <if test="password != null and password != ''">
+                password = #{password},
+        </if>
+        <if test="registerTime != null">
+                register_time = #{registerTime},
+        </if>
+        <if test="imagePath != null and imagePath != ''">
+                image_path = #{imagePath},
+        </if>
+    </sql>
+    
+    <!--新增user:哪个字段不为空就添加哪列数据,返回自增主键-->
+    <insert id="insert" keyProperty="userId" useGeneratedKeys="true">
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="insertColumn"/>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="insertValue"/>
+        </trim>
+    </insert>
+   
+    <!--删除user:通过主键-->
+    <delete id="deleteById">
+        delete from user
+        <where>
+            user_id = #{userId}
+        </where>
+    </delete>
+    
+    <!--查询单个user-->
+    <select id="queryById" resultMap="UserMap">
+        select
+        <include refid="allColumn"></include>
+        from user
+        <where>
+            user_id = #{userId}
+        </where>
+    </select>
+
+    <!--查询单个user-->
+    <select id="getUserByOpenId" resultMap="UserMap">
+        select
+        <include refid="allColumn"></include>
+        from user
+        <where>
+            open_id = #{openId}
+        </where>
+    </select>
+
+    <!--查询单个user-->
+    <select id="getUserByEmail" resultMap="UserMap">
+        select
+        <include refid="allColumn"></include>
+        from user
+        <where>
+            email = #{email}
+        </where>
+    </select>
+
+    <!--查询单个user-->
+    <select id="queryByEmailAndPwd" resultMap="UserMap">
+        select
+        <include refid="allColumn"></include>
+        from user
+        <where>
+            email = #{email} and password = #{password}
+        </where>
+    </select>
+
+    <!--查询所有user-->
+    <select id="queryAllByLimit" resultMap="UserMap">
+        select
+        <include refid="allColumn"></include>
+        from user
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="UserMap">
+        select
+          <include refid="allColumn"></include>
+        from user
+        <trim prefix="where" prefixOverrides="and" suffixOverrides=",">
+            <include refid="commonsValue"></include>
+        </trim>
+    </select>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update user
+        <set>
+            <include refid="commonsValue"></include>
+        </set>
+        <where>
+            user_id = #{userId}
+        </where>
+    </update>
+    <select id="getUsers" resultType="com.moti.entity.UserToShow">
+        SELECT u.user_id,user_name,image_path,register_time,u.email,FLOOR(current_size/max_size*100) `current`,max_size,permission from user u
+        INNER JOIN file_store f
+        ON u.user_id = f.user_id
+    </select>
+    <select id="getUsersCount" resultType="java.lang.Integer">
+        select count(*) from user;
+    </select>
+</mapper>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>莫提网盘-登录注册</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css'>
+
+<!--    <link rel='stylesheet' href='https://ajax.aspnetcdn.com/ajax/bootstrap/4.2.1/css/bootstrap.min.css'>-->
+
+    <link rel="stylesheet" href="u-admin/dist/modules/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/upload-file.css">
+</head>
+<body>
+<div class="container">
+    <div class="card-wrap">
+        <div class="card border-0 shadow card--welcome is-show" id="welcome">
+            <div class="card-body">
+                <h2 class="card-title"><i class="fa fa-cloud" aria-hidden="true"></i> 莫提网盘</h2>
+                <br>
+                <!--判断是否包含错误信息-->
+                <p style="color: red" th:text="${errorMsg}"></p>
+                <br th:if="${errorMsg == null}">
+                <div class="btn-wrap"><a class="btn btn-lg btn-register js-btn" data-target="register">注册</a><a
+                        class="btn btn-lg btn-login js-btn" data-target="login">登录</a></div>
+                <br>
+                <p>以下方式免注册</p>
+                <p class="badge-wrap">
+                    <a title="QQ登录免注册" th:href="@{/loginByQQ}" class="badge btn-success"><i class="fab fa-qq"></i></a>
+                    <a title="上传临时文件" class="badge btn-upload js-btn btn-success" data-target="upload"><i class="fa fa-upload" aria-hidden="true"></i></a>
+                </p>
+            </div>
+        </div>
+        <div class="card border-0 shadow card--register" id="register">
+            <div class="card-body">
+                <h2 class="card-title">用户注册</h2>
+                <p/>
+                <p/>
+                <form method="post" action="register">
+                    <div class="form-group">
+                        <label>
+                            <input class="form-control userName" type="text" placeholder="用户名" required="required"
+                                   name="userName" autocomplete="off"
+                                   onkeyup="this.value=this.value.replace(/\s+/g,'')"/>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input class="form-control password" type="password" placeholder="密码" required="required"
+                                   name="password" autocomplete="off"
+                                   onkeyup="this.value=this.value.replace(/\s+/g,'')">
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input class="form-control email" id="email" type="email" placeholder="邮箱"
+                                   required="required"
+                                   name="email" autocomplete="off" onkeyup="this.value=this.value.replace(/\s+/g,'')"/>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input class="form-control" type="text" placeholder="验证码" required="required"
+                                   name="code" style="position: relative; left: 45px;" autocomplete="off"
+                                   onkeyup="this.value=this.value.replace(/\s+/g,'')"/>
+                        </label>
+                        <input id="btnSendCode1" type="button" class="btn btn-default" value="获取验证码"
+                               onClick="sendMessage1()"/>
+                    </div>
+
+                    <button class="btn btn-lg" type="submit">注册</button>
+                </form>
+            </div>
+            <button class="btn btn-back js-btn" data-target="welcome"><i class="fas fa-angle-left"></i></button>
+        </div>
+        <div class="card border-0 shadow card--login" id="login">
+            <div class="card-body">
+                <h2 class="card-title">用户登录</h2>
+                <br><br>
+                <form method="post" action="login">
+                    <div class="form-group">
+                        <label>
+                            <input class="form-control" type="email" th:placeholder="邮箱" name="email"
+                                   required="required"
+                                   onkeyup="this.value=this.value.replace(/\s+/g,'')"/>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input class="form-control" type="password" placeholder="密码" required="required"
+                                   name="password" autocomplete="off"
+                                   onkeyup="this.value=this.value.replace(/\s+/g,'')"/>
+                        </label>
+                    </div>
+                    <button class="btn btn-lg" type="submit">登录</button>
+                </form>
+                <br><br>
+            </div>
+            <button class="btn btn-back js-btn" data-target="welcome"><i class="fas fa-angle-left"></i></button>
+        </div>
+        <div class="card border-0 shadow card--upload" id="upload">
+            <div class="card-body">
+                <h2 class="card-title">临时文件</h2>
+                <br><p style="color: red">仅4小时有效</p><br>
+                <form id="tempFile" method="post" action="uploadTempFile" multiple="multiple" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>
+                            <input class="form-control" type="file" name="file" id="file"/>
+                            <input class="form-control" type="hidden" id="url" name="url"/>
+                        </label>
+                    </div>
+                    <button class="btn btn-lg btn-success" type="button" onclick="check()">上传</button>
+                </form>
+
+                <br><br>
+            </div>
+            <button class="btn btn-back js-btn" data-target="welcome"><i class="fas fa-angle-left"></i></button>
+        </div>
+    </div>
+</div>
+<script src="js/jquery-3.4.1.js"></script>
+<script src="js/login.js"></script>
+<script>
+    function check() {
+        if ($('#file').val() === "") {
+            alert("请选择文件！");
+            return;
+        }
+        var size = $("input[type=file]").get(0).files[0].size;
+        if (size > 10485760){
+            alert("临时文件最大可上传10MB！");
+            return;
+        }
+        var location = window.location.href;
+        let strings = location.split("moti-cloud");
+        $('#url').val(strings[0]+"moti-cloud");
+        $('#tempFile').submit();
+    }
+    var emailReg = /^[\da-z]+([\-\.\_]?[\da-z]+)*@[\da-z]+([\-\.]?[\da-z]+)*(\.[a-z]{2,})+$/;//邮箱正则
+    var userNameReg = /^[\u4e00-\u9fa5\w]{1,6}$/;//用户名正则
+    var count = 60; //间隔函数，1秒执行
+    var InterValObj1; //timer变量，控制时间
+    var curCount1;//当前剩余秒数
+    /*第一*/
+    function sendMessage1() {
+        curCount1 = count;
+        var email = $.trim($('#email').val());
+        var userName = $.trim($(".userName").val());
+        var password = $.trim($(".password").val());
+        if (!emailReg.test(email)) {
+            alert("邮箱格式错误！");
+            return false;
+        }
+        if (!userNameReg.test(userName)) {
+            alert("用户名不可用！");
+            return false;
+        }
+        if (password === "") {
+            alert("密码不能为空！");
+            return false;
+        }
+        //设置button效果，开始计时
+        $("#btnSendCode1").attr("disabled", "true");
+        $("#btnSendCode1").val(+curCount1 + "S 重发");
+        InterValObj1 = window.setInterval(SetRemainTime1, 1000); //启动计时器，1秒执行一次
+        //向后台发送处理数据
+        var email = $(".email").val();
+        $.ajax({
+            type: "GET",
+            url: "sendCode",
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            data: {userName: userName, password: password, email: email},
+            success: function (result) {
+                if (result === "exitEmail") {
+                    window.clearInterval(InterValObj1);
+                    $("#btnSendCode1").val("获取验证码");
+                    $("#btnSendCode1").removeAttr("disabled");//启用按钮
+                    alert("这个邮箱已经被使用了哦！");
+                }
+                return false;
+            },
+            error: function (msg) {
+                return false;
+            }
+        });
+    }
+
+    function SetRemainTime1() {
+        if (curCount1 == 0) {
+            window.clearInterval(InterValObj1);//停止计时器
+            $("#btnSendCode1").removeAttr("disabled");//启用按钮
+            $("#btnSendCode1").val("重新发送");
+        } else {
+            curCount1--;
+            $("#btnSendCode1").val(+curCount1 + "S 重发");
+        }
+    }
+
+    /*提交*/
+    function binding() {
+        alert(1)
+    }
+</script>
+</body>
+</html>

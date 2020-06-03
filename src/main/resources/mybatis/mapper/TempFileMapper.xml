@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moti.mapper.TempFileMapper">
+    <!--开启二级缓存,使用Ehcache缓存框架-->
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+    <!--temp_file的映射结果集-->
+    <resultMap type="com.moti.entity.TempFile" id="TempFileMap">
+        <result property="fileId" column="file_id" jdbcType="INTEGER"/>
+        <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
+        <result property="size" column="size" jdbcType="INTEGER"/>
+        <result property="uploadTime" column="upload_time" jdbcType="TIMESTAMP"/>
+        <result property="filePath" column="file_path" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <!--全部字段-->
+    <sql id="allColumn"> file_id, file_name, size, upload_time, file_path </sql>
+    
+    <!--添加语句的字段列表-->
+    <sql id="insertColumn">
+        <if test="fileName != null and fileName != ''">
+                file_name,
+        </if>
+        <if test="size != null">
+                size,
+        </if>
+        <if test="uploadTime != null">
+                upload_time,
+        </if>
+        <if test="filePath != null and filePath != ''">
+                file_path,
+        </if>
+    </sql>
+    
+    <!--添加语句的值列表-->
+        <sql id="insertValue">
+        <if test="fileName != null and fileName != ''">
+                #{fileName},
+        </if>
+        <if test="size != null">
+                #{size},
+        </if>
+        <if test="uploadTime != null">
+                #{uploadTime},
+        </if>
+        <if test="filePath != null and filePath != ''">
+                #{filePath},
+        </if>
+    </sql>
+    
+    <!--通用对TempFile各个属性的值的非空判断-->
+    <sql id="commonsValue">
+        <if test="fileName != null and fileName != ''">
+                file_name = #{fileName},
+        </if>
+        <if test="size != null">
+                size = #{size},
+        </if>
+        <if test="uploadTime != null">
+                upload_time = #{uploadTime},
+        </if>
+        <if test="filePath != null and filePath != ''">
+                file_path = #{filePath},
+        </if>
+    </sql>
+    
+    <!--新增temp_file:哪个字段不为空就添加哪列数据,返回自增主键-->
+    <insert id="insert" keyProperty="fileId" useGeneratedKeys="true">
+        insert into temp_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="insertColumn"/>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="insertValue"/>
+        </trim>
+    </insert>
+   
+    <!--删除temp_file:通过主键-->
+    <delete id="deleteById">
+        delete from temp_file
+        <where>
+            file_id = #{fileId}
+        </where>
+    </delete>
+    
+    <!--查询单个temp_file-->
+    <select id="queryById" resultMap="TempFileMap">
+        select
+        <include refid="allColumn"></include>
+        from temp_file
+        <where>
+            file_id = #{fileId}
+        </where>
+    </select>
+
+    <!--查询所有temp_file-->
+    <select id="queryAllByLimit" resultMap="TempFileMap">
+        select
+        <include refid="allColumn"></include>
+        from temp_file
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TempFileMap">
+        select
+          <include refid="allColumn"></include>
+        from temp_file
+        <trim prefix="where" prefixOverrides="and" suffixOverrides=",">
+            <include refid="commonsValue"></include>
+        </trim>
+    </select>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update temp_file
+        <set>
+            <include refid="commonsValue"></include>
+        </set>
+        <where>
+            file_id = #{fileId}
+        </where>
+    </update>
+
+</mapper>

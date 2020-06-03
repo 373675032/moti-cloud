@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+	<title>莫提网盘-管理员-用户管理</title>
+
+	<link rel="stylesheet" href="u-admin/dist/modules/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="u-admin/dist/modules/ionicons/css/ionicons.min.css">
+	<link rel="stylesheet" href="u-admin/dist/modules/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css">
+
+	<link rel="stylesheet" href="u-admin/dist/modules/summernote/summernote-lite.css">
+	<link rel="stylesheet" href="u-admin/dist/modules/flag-icon-css/css/flag-icon.min.css">
+	<link rel="stylesheet" href="u-admin/dist/css/demo.css">
+	<link rel="stylesheet" href="u-admin/dist/css/style.css">
+	<link rel="stylesheet" href="css/zxf_page.css">
+</head>
+
+<body>
+<div id="app">
+	<div class="main-wrapper">
+		<div class="navbar-bg"></div>
+		<div th:replace="commons/bar::#top"></div>
+		<div th:replace="commons/bar::#sidebar(currUri='manage-users',statistics = ${statistics})"></div>
+
+		<div class="main-content">
+			<section class="section">
+				<h1 class="section-header">
+					<div><i class="ion ion-person-stalker"></i> 管理用户（总量：[[${usersCount}]]）</div>
+				</h1>
+				<div class="row">
+					<div class="col-12">
+						<div class="card">
+							<div class="card-body">
+								<div class="table-responsive">
+									<table class="table table-striped text-nowrap">
+										<tr>
+											<th>ID</th>
+											<th>头像</th>
+											<th>用户名</th>
+											<th>邮箱</th>
+											<th>仓库使用情况</th>
+											<th>注册时间</th>
+											<th>上传权限</th>
+											<th>仓库容量(MB)</th>
+											<th>操作</th>
+										</tr>
+										<tr th:each="user:${users}">
+											<td th:text="${user.userId}"></td>
+											<td>
+												<img alt="image" th:src="${user.imagePath}" class="rounded-circle" width="25" data-toggle="title" title="Wildan Ahdian">
+											</td>
+											<td th:text="${user.userName}"></td>
+											<td th:text="${user.email}"></td>
+											<td class="align-middle">
+												<div class="progress" style="height: 4px;" data-toggle="tooltip" th:title="${user.current + '%'}">
+													<div class="progress-bar bg-success" th:style="'width:'+ ${user.current + '%'}"></div>
+												</div>
+											</td>
+											<td th:text="${#dates.format(user.registerTime,'yyyy-MM-dd HH:mm')}"></td>
+											<td>
+												<select th:id="${'permission'+user.userId}">
+													<option value="0" th:if="${user.permission == 0}" checked>允许上传下载</option>
+													<option value="1" th:if="${user.permission == 1}" checked>只允许下载</option>
+													<option value="2" th:if="${user.permission == 2}" checked>禁止上传下载</option>
+													<option value="0" th:if="${user.permission != 0}">允许上传下载</option>
+													<option value="1" th:if="${user.permission != 1}">只允许下载</option>
+													<option value="2" th:if="${user.permission != 2}">禁止上传下载</option>
+												</select>
+											</td>
+											<td>
+												<input th:id="${'size'+user.userId}" type="number" min="1024" th:value="${user.maxSize/1024}">
+											</td>
+											<td>
+												<a th:href="'javaScript:updateStore('+${user.userId}+')'" class="btn-sm btn-success">更新</a>
+												<a th:href="@{/deleteUser(cur=${page.getPageNum()},uId=${user.userId})}" class="btn-sm btn-danger">删除</a>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div class="zxf_pagediv"></div>
+					</div>
+				</div>
+				<div id="pageNum" style="display: none">[[${page.getPages()}]]</div>
+				<div id="current" style="display: none">[[${page.getPageNum()}]]</div>
+				<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+				<script type="text/javascript" src="js/zxf_page.js"></script>
+				<script type="text/javascript">
+					//翻页
+					$(".zxf_pagediv").createPage({
+						pageNum: $('#pageNum').html(),
+						current: $('#current').html(),
+						backfun: function(e) {
+							var location = window.location.href;
+							let strings = location.split("moti-cloud");
+							console.log(strings[0]);
+							window.location.href = strings[0]+"moti-cloud/manages-users?cur="+e['current'];
+						}
+					});
+					function updateStore(id) {
+						var pre = '#permission'+id;
+						var size = '#size'+id;
+						if ($(size).val() < 1024){
+							alert("仓库容量最小为1024MB！");
+							return;
+						}
+						$.ajax({
+							type:"GET",
+							url:"updateStoreInfo",
+							data:{
+								"uId":id,
+								"pre":$(pre).val(),
+								"size":$(size).val()
+							},
+							success:function (data) {
+								if (data == "200"){
+									alert("修改成功！");
+								}
+							},
+							error:function (e) {
+								console.log(e.responseText);
+							}
+						});
+					}
+				</script>
+			</section>
+		</div>
+		<div th:replace="commons/bar::#footer"></div>
+	</div>
+</div>
+<script src="u-admin/dist/modules/jquery.min.js"></script>
+<script src="u-admin/dist/modules/popper.js"></script>
+<script src="u-admin/dist/modules/tooltip.js"></script>
+<script src="u-admin/dist/modules/bootstrap/js/bootstrap.min.js"></script>
+<script src="u-admin/dist/modules/nicescroll/jquery.nicescroll.min.js"></script>
+<script src="u-admin/dist/modules/scroll-up-bar/dist/scroll-up-bar.min.js"></script>
+<script src="u-admin/dist/js/sa-functions.js"></script>
+<script src="u-admin/dist/modules/chart.min.js"></script>
+<script src="u-admin/dist/modules/summernote/summernote-lite.js"></script>
+<script src="u-admin/dist/js/scripts.js"></script>
+<script src="u-admin/dist/js/custom.js"></script>
+<script src="u-admin/dist/js/demo.js"></script>
+<script src="u-admin/dist/modules/chart.min.js"></script>
+</body>
+</html>

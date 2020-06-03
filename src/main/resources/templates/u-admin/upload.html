@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+	<title>莫提网盘-上传文件</title>
+
+	<link rel="stylesheet" href="u-admin/dist/modules/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="u-admin/dist/modules/ionicons/css/ionicons.min.css">
+	<link rel="stylesheet" href="u-admin/dist/modules/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css">
+
+	<link rel="stylesheet" href="u-admin/dist/modules/summernote/summernote-lite.css">
+	<link rel="stylesheet" href="u-admin/dist/modules/flag-icon-css/css/flag-icon.min.css">
+	<link rel="stylesheet" href="u-admin/dist/css/demo.css">
+	<link rel="stylesheet" href="u-admin/dist/css/style.css">
+	<link rel="stylesheet" href="css/upload-file.css">
+	<link rel="stylesheet" href="plug-ins/xcConfirm/css/xcConfirm.css">
+	<link rel="stylesheet" href="plug-ins/context-menu/css/contextMenu.css">
+	<style>
+		.files-items{
+			margin-top: -20px;
+			border-bottom: 1px dashed #bdc3c7;
+			border-top: 1px dashed #bdc3c7;
+		}
+		.files-items:hover{
+			background: #F4FBFF;
+		}
+	</style>
+
+</head>
+
+<body>
+<div id="app">
+	<div class="main-wrapper">
+		<div class="navbar-bg"></div>
+		<div th:replace="commons/bar::#top"></div>
+		<div th:replace="commons/bar::#sidebar(currUri='upload',statistics = ${statistics})"></div>
+
+		<div class="main-content">
+			<section class="section">
+				<h1 class="section-header">
+					<div><i class="ion ion-folder"></i> 上传文件 <span style="color: red;font-size: 14px" th:if="${error != null}" th:text="${error}"></span></div>
+				</h1>
+				<div class="row">
+					<div class="col-12 col-sm-12 col-lg-8">
+						<div class="card">
+							<div class="card-header">
+								<h4>当前路径</h4>
+								<nav aria-label="breadcrumb" class="empty-space">
+									<ol class="breadcrumb">
+										<li class="breadcrumb-item"><a
+												th:href="@{/upload(fId=${nowFolder.fileFolderId})}"
+												title="刷新"><i
+												class="icon ion-refresh"></i></a>
+										</li>
+										<li th:class="${nowFolder.fileFolderId == 0?'breadcrumb-item active':'breadcrumb-item'}">
+                                                            <span th:if="${nowFolder.fileFolderId == 0}"
+																  th:text="根目录"></span><a style="font-weight: bold"
+																						  th:if="${nowFolder.fileFolderId != 0}"
+																						  href="upload">根目录</a></li>
+										<li th:each="l:${location}" class="breadcrumb-item"><a
+												style="font-weight: bold"
+												th:href="@{/upload(fId=${l.fileFolderId},fName=${l.fileFolderName})}"
+												th:text="${l.fileFolderName}"></a></li>
+										<li th:if="${nowFolder.fileFolderId != 0}"
+											class="breadcrumb-item active" aria-current="page"
+											th:text="${nowFolder.fileFolderName}"></li>
+										<li th:if="${nowFolder.fileFolderId != 0}"
+											class="breadcrumb-item"><a
+												th:href="@{/upload(fId=${nowFolder.parentFolderId})}"
+												title="返回上一层"><i
+												class="icon ion-arrow-return-left"></i></a>
+										</li>
+									</ol>
+								</nav>
+							</div>
+							<div class="card-body table-responsive">
+								<div id="uploader" style="margin-top: -10px;"></div>
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-sm-12 col-lg-4">
+						<div class="card">
+							<div class="card-header">
+								<h4>预览</h4>
+							</div>
+							<div class="card-body">
+								<div class="row" style="margin-top: -10px;">
+									<div class="col-12 col-sm-12 col-lg-12 table-responsive">
+										<table class="table tab-bordered text-nowrap" id="files-table">
+											<tr th:each="folder:${folders}" class="files-items folders">
+												<td><span style="display: none" th:text="${folder.fileFolderId}"></span><i style="font-size: 24px;color: orange" class="icon ion-android-folder"></i></td>
+												<td>
+													<a th:href="@{/upload(fId=${folder.fileFolderId},fName=${folder.fileFolderName})}" style="font-weight: 700;color: black" th:text="${folder.fileFolderName}"></a>
+												</td>
+												<td style="font-weight: 300" th:text="${#dates.format(folder.time,'yyyy-MM-dd HH:mm')}"></td>
+											</tr>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<span id="nowF" style="display: none" th:text="${nowFolder.fileFolderId}"></span>
+			<span id="preF" style="display: none" th:text="${nowFolder.parentFolderId}"></span>
+			<span id="tarFolder" style="display: none"></span>
+		</div>
+		<div th:replace="commons/bar::#footer"></div>
+	</div>
+</div>
+<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+<script>
+	$(function () {
+		$('.folders').dblclick(function () {
+			let id = $(this).children("td").children("span").html();
+			var location = window.location.href;
+			let strings = location.split("?");
+			if (id != ""){
+				window.location.href = strings[0]+"?fId="+id;
+			}else{
+				return;
+			}
+		});
+		$('.folders').hover(function () {
+			let id = $(this).children("td").children("span").html();
+			$('#tarFolder').html(id);
+			$(this).siblings().removeClass('flag');
+			$(this).addClass('flag');
+		},function () {
+		});
+	});
+</script>
+<script src="plug-ins/context-menu/js/jquery.contextMenu.min.js"></script>
+<script src="plug-ins/xcConfirm/js/xcConfirm.js"></script>
+<script>
+	$(".folders").contextMenu({
+		width: 100, // width
+		itemHeight: 30, // 菜单项height
+		bgColor: "#fff", // 背景颜色
+		color: "#333", // 字体颜色
+		fontSize: 12, // 字体大小
+		hoverBgColor: "#3498db", // hover背景颜色
+		target: function(ele) { // 当前元素
+			console.log(ele);
+		},
+		menu: [{ // 菜单项
+			text: " 打开",
+			callback: function() {
+				let id = $('#tarFolder').html();
+				var location = window.location.href;
+				let strings = location.split("?");
+				if (id != ""){
+					window.location.href = strings[0]+"?fId="+id;
+				}else{
+					return;
+				}
+			}
+		},
+			{
+				text: " 返回上一级",
+				callback: function() {
+					toPreFolder();
+				}
+			}
+		]
+
+	});
+	function toPreFolder() {
+		var location = window.location.href;
+		let strings = location.split("?");
+		var pre = $('#preF').html();
+		if (pre != ""){
+			window.location.href = strings[0]+"?fId="+pre;
+		}else{
+			return;
+		}
+	}
+
+</script>
+<script src="js/easyUploader.jq.js"></script>
+<script>
+	var uploader = easyUploader({
+		id: "uploader",
+		accept: '',
+		action: 'uploadFile',
+		dataFormat: 'formData',
+		headers:{
+			id:$('#nowF').html()
+		},
+		maxCount: 10,
+		maxSize: 1024,
+		multiple: true,
+		data: null,
+		beforeUpload: function(file, data, args) {
+			/* dataFormat为formData时配置发送数据的方式 */
+			data.append('token', '387126b0-7b3e-4a2a-86ad-ae5c5edd0ae6TT');
+			data.append('otherKey', 'otherValue');
+
+			/* dataFormat为base64时配置发送数据的方式 */
+			// data.base = file.base;
+			// data.token = '387126b0-7b3e-4a2a-86ad-ae5c5edd0ae6TT';
+			// data.otherKey = 'otherValue';
+		},
+		onChange: function(fileList) {
+			/* input选中时触发 */
+			document.body.onbeforeunload = function() {
+				window.event.returnValue = "确认离开？";
+			}
+		},
+		onRemove: function(removedFiles, files) {
+			console.log('onRemove', removedFiles);
+		},
+		onSuccess: function(res) {
+			var code = res["code"];
+			console.log(code);
+			if (code == 499){
+				alert("可能因为你的违规操作，您暂时无法上传文件！");
+			}
+			if (code == 501){
+				alert("当前目录存在同名文件，请删除后再试！");
+			}
+			if (code == 502){
+				alert("文件名不符合规范，支持【汉字,字符,数字,下划线,英文句号,横线】");
+			}
+			if (code == 503){
+				alert("仓库容量不足，上传失败！");
+			}
+			if (code == 504){
+				alert("服务器出错了！");
+			}
+			document.body.onbeforeunload = function () {
+				window.event.returnValue = "确认离开？";
+			}
+		},
+		onError: function(err) {
+			console.log('onError', err);
+		},
+	});
+</script>
+<script src="u-admin/dist/modules/jquery.min.js"></script>
+<script src="u-admin/dist/modules/popper.js"></script>
+<script src="u-admin/dist/modules/tooltip.js"></script>
+<script src="u-admin/dist/modules/bootstrap/js/bootstrap.min.js"></script>
+<script src="u-admin/dist/modules/nicescroll/jquery.nicescroll.min.js"></script>
+<script src="u-admin/dist/modules/scroll-up-bar/dist/scroll-up-bar.min.js"></script>
+<script src="u-admin/dist/js/sa-functions.js"></script>
+
+<script src="u-admin/dist/modules/chart.min.js"></script>
+<script src="u-admin/dist/modules/summernote/summernote-lite.js"></script>
+
+<script src="u-admin/dist/js/scripts.js"></script>
+<script src="u-admin/dist/js/custom.js"></script>
+<script src="u-admin/dist/js/demo.js"></script>
+<script src="u-admin/dist/modules/chart.min.js"></script>
+</body>
+</html>
