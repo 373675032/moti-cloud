@@ -68,4 +68,4 @@
 
 **开源不易，请作者喝杯咖啡吧~☕**
 
-![](wechat.jpg)
+![](https://github.com/373675032/moti-cloud/blob/master/wechat.jpg)
