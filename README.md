@@ -3,7 +3,7 @@
 
 [下载莫提网盘-v1.0](https://github.com/373675032/moti-cloud/releases)
 
-[网盘地址](http://xuewei.world/moti-cloud/)          [视频演示](https://www.bilibili.com/video/av92186731)
+[网盘地址](http://xuewei.world/moti-cloud/)          [视频演示](https://www.bilibili.com/video/BV1p7411y7aQ)
 
 ### 注意
 
